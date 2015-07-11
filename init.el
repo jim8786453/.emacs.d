@@ -26,9 +26,10 @@
 (defvar packages-list
   '(auto-complete              ;; Auto Completion for GNU Emacs
     epc                        ;; A RPC stack for the Emacs Lisp
+    dash
     fullscreen-mode            ;; fullscreen window support for Emacs
     helm                       ;; Helm is an Emacs incremental and narrowing framework
-    helm-projectile            ;; Helm integration for Projectile
+    helm-projectile
     jedi                       ;; Python auto-completion for Emacs
     magit                      ;; control Git from Emacs
     multiple-cursors           ;; Multiple cursors for Emacs.
@@ -361,7 +362,7 @@
 
 (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
 (global-set-key "\C-ca" 'org-agenda)
-(add-hook 'org-mode-hook 
+(add-hook 'org-mode-hook
           (function (lambda ()
                       (flyspell-mode)
                       (visual-line-mode)
@@ -445,6 +446,12 @@
 
 (load (expand-file-name "~/quicklisp/slime-helper.el"))
 (setq inferior-lisp-program "sbcl")
+
+;;
+;; Jedi
+
+(add-hook 'python-mode-hook 'jedi:setup)
+(setq jedi:complete-on-dot t)
 
 ;;
 ;; Do this last so we have a visual clue initialisation is finished.
