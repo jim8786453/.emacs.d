@@ -24,7 +24,9 @@
 
 ;; Guarantee all packages are installed on start
 (defvar packages-list
-  '(auto-complete              ;; Auto Completion for GNU Emacs
+  '(ace-window
+    avy
+    auto-complete              ;; Auto Completion for GNU Emacs
     epc                        ;; A RPC stack for the Emacs Lisp
     dash
     fullscreen-mode            ;; fullscreen window support for Emacs
@@ -431,15 +433,11 @@
 (global-set-key [f7] 'call-last-kbd-macro)
 (global-set-key (kbd "<f12>") 'ispell-word)
 (global-set-key (kbd "C-<f8>") 'flyspell-mode)
-(global-set-key (kbd "C-c <left>")  'windmove-left)
-(global-set-key (kbd "C-c <right>") 'windmove-right)
-(global-set-key (kbd "C-c <up>")    'windmove-up)
-(global-set-key (kbd "C-c <down>")  'windmove-down)
-(when (fboundp 'windmove-default-keybindings)
-  (windmove-default-keybindings))
 (global-set-key [f8] 'dired-time)
 (define-key dired-mode-map
   (vector 'remap 'beginning-of-buffer) 'dired-back-to-top)
+(global-set-key (kbd "C-c j") 'avy-goto-word-or-subword-1)
+(global-set-key (kbd "C-x o") 'ace-window)
 
 ;;
 ;; Slime
