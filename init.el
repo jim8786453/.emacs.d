@@ -25,19 +25,19 @@
 ;; Guarantee all packages are installed on start
 (defvar packages-list
   '(ace-window
+    auto-complete
     avy
-    auto-complete              ;; Auto Completion for GNU Emacs
-    epc                        ;; A RPC stack for the Emacs Lisp
     dash
-    fullscreen-mode            ;; fullscreen window support for Emacs
-    helm                       ;; Helm is an Emacs incremental and narrowing framework
+    epc
+    fullscreen-mode
+    helm
     helm-projectile
-    jedi                       ;; Python auto-completion for Emacs
-    magit                      ;; control Git from Emacs
-    multiple-cursors           ;; Multiple cursors for Emacs.
-    paredit                    ;; minor mode for editing parentheses
-    projectile                 ;; Manage and navigate projects in Emacs easily
-    ) "List of packages needs to be installed at launch")
+    jedi
+    magit
+    multiple-cursors
+    paredit
+    projectile
+    virtualenvwrapper) "List of packages needs to be installed at launch")
 
 (defun has-package-not-installed ()
   (loop for p in packages-list
@@ -442,14 +442,27 @@
 ;;
 ;; Slime
 
-(load (expand-file-name "~/quicklisp/slime-helper.el"))
-(setq inferior-lisp-program "sbcl")
+(setq quicklisp-location "~/quicklisp/slime-helper.el")
+(when (not (file-exists-p quicklisp-location))
+  (load (expand-file-name quicklisp-location))
+  (setq inferior-lisp-program "sbcl"))
 
 ;;
-;; Jedi
+;; Python
 
+;; Jedi
 (add-hook 'python-mode-hook 'jedi:setup)
 (setq jedi:complete-on-dot t)
+
+;; Virtual environments
+(require 'virtualenvwrapper)
+(venv-initialize-interactive-shells) ;; if you want interactive shell support
+(venv-initialize-eshell) ;; if you want eshell support
+(setq venv-location "~/python-envs/")
+
+;; Ensure the venv-location directory exists
+(unless (file-exists-p venv-location)
+  (make-directory venv-location))
 
 ;;
 ;; Do this last so we have a visual clue initialisation is finished.
