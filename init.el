@@ -276,6 +276,7 @@
  '(drupal-delete-trailing-whitespace (quote never))
  '(geben-pause-at-entry-line t)
  '(inhibit-startup-screen t)
+ '(ispell-program-name "aspell")
  '(mouse-avoidance-mode nil nil (avoid))
  '(mouse-wheel-mode t)
  '(org-agenda-dim-blocked-tasks nil)
