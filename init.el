@@ -408,6 +408,8 @@
 (setq tramp-default-method "ssh")
 (set-time-zone-rule "GMT-1")
 (fset 'yes-or-no-p 'y-or-n-p)
+(set-face-attribute 'default nil :height 140)
+(setenv "GIT_ASKPASS" "git-gui--askpass")
 
 ;;
 ;; Bindings
