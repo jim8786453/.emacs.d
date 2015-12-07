@@ -446,7 +446,7 @@
 ;; Slime
 
 (setq quicklisp-location "~/quicklisp/slime-helper.el")
-(when (not (file-exists-p quicklisp-location))
+(when (file-exists-p quicklisp-location)
   (load (expand-file-name quicklisp-location))
   (setq inferior-lisp-program "sbcl"))
 
@@ -458,10 +458,12 @@
 (setq jedi:complete-on-dot t)
 
 ;; Virtual environments
-(require 'virtualenvwrapper)
-(venv-initialize-interactive-shells) ;; if you want interactive shell support
-(venv-initialize-eshell) ;; if you want eshell support
-(setq venv-location "~/python-envs/")
+(setq python-envs-location "~/python-envs/")
+(when (file-exists-p python-envs-location)
+  (require 'virtualenvwrapper)
+  (venv-initialize-interactive-shells) ;; if you want interactive shell support
+  (venv-initialize-eshell) ;; if you want eshell support
+  (setq venv-location python-envs-location))
 
 ;; Ensure the venv-location directory exists
 (unless (file-exists-p venv-location)
