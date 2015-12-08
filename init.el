@@ -260,6 +260,10 @@
   (interactive "*p")
   (move-text-internal (- arg)))
 
+(defun open-init-file ()
+  (interactive)
+  (find-file "~/.emacs.d/init.el"))
+
 ;;
 ;; Custom set variables
 
@@ -436,7 +440,7 @@
 (global-set-key [f7] 'call-last-kbd-macro)
 (global-set-key (kbd "<f12>") 'ispell-word)
 (global-set-key (kbd "C-<f8>") 'flyspell-mode)
-(global-set-key [f8] 'dired-time)
+(global-set-key [f8] 'open-init-file)
 (define-key dired-mode-map
   (vector 'remap 'beginning-of-buffer) 'dired-back-to-top)
 (global-set-key (kbd "C-c j") 'avy-goto-word-or-subword-1)
