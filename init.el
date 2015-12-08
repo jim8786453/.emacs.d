@@ -469,10 +469,6 @@
   (venv-initialize-eshell) ;; if you want eshell support
   (setq venv-location python-envs-location))
 
-;; Ensure the venv-location directory exists
-(unless (file-exists-p venv-location)
-  (make-directory venv-location))
-
 ;;
 ;; Do this last so we have a visual clue initialisation is finished.
 
