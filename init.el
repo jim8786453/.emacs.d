@@ -20,7 +20,8 @@
 ;; Set up extra package sources.
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("marmalade" . "http://marmalade-repo.org/packages/")
-                         ("melpa" . "http://melpa.milkbox.net/packages/")))
+                         ("melpa" . "http://melpa.milkbox.net/packages/")
+                         ("elpy" . "https://jorgenschaefer.github.io/packages/")))
 
 ;; Guarantee all packages are installed on start
 (defvar packages-list
@@ -28,6 +29,7 @@
     auto-complete
     avy
     dash
+    elpy
     epc
     fullscreen-mode
     helm
@@ -37,7 +39,8 @@
     multiple-cursors
     paredit
     projectile
-    virtualenvwrapper) "List of packages needs to be installed at launch")
+    ;; virtualenvwrapper
+    ) "List of packages needs to be installed at launch")
 
 (defun has-package-not-installed ()
   (loop for p in packages-list
@@ -297,7 +300,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(highlight-indentation-face ((t (:inherit nil)))))
 
 ;;
 ;; Backups
@@ -457,17 +460,10 @@
 ;;
 ;; Python
 
-;; Jedi
-(add-hook 'python-mode-hook 'jedi:setup)
-(setq jedi:complete-on-dot t)
-
-;; Virtual environments
 (setq python-envs-location "~/python-envs/")
 (when (file-exists-p python-envs-location)
-  (require 'virtualenvwrapper)
-  (venv-initialize-interactive-shells) ;; if you want interactive shell support
-  (venv-initialize-eshell) ;; if you want eshell support
-  (setq venv-location python-envs-location))
+  (package-initialize)
+  (elpy-enable))
 
 ;;
 ;; Do this last so we have a visual clue initialisation is finished.
