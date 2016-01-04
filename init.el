@@ -32,6 +32,7 @@
     elpy
     epc
     fullscreen-mode
+    git-gutter
     helm
     helm-projectile
     jedi
@@ -417,6 +418,7 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 (set-face-attribute 'default nil :height 140)
 (setenv "GIT_ASKPASS" "git-gui--askpass")
+(global-git-gutter-mode +1)
 
 ;;
 ;; Bindings
