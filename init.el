@@ -40,7 +40,7 @@
     multiple-cursors
     paredit
     projectile
-    ;; virtualenvwrapper
+    undo-tree
     ) "List of packages needs to be installed at launch")
 
 (defun has-package-not-installed ()
