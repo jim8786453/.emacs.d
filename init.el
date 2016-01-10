@@ -156,23 +156,6 @@
              (set-window-start w2 s1)
              (setq i (1+ i)))))))
 
-(defun move-line-down ()
-  (interactive)
-  (let ((col (current-column)))
-    (save-excursion
-      (forward-line)
-      (transpose-lines 1))
-    (forward-line)
-    (move-to-column col)))
-
-(defun move-line-up ()
-  (interactive)
-  (let ((col (current-column)))
-    (save-excursion
-      (forward-line)
-      (transpose-lines -1))
-    (move-to-column col)))
-
 (defun goto-line-with-feedback ()
   "Show line numbers temporarily, while prompting for the line number input"
   (interactive)
@@ -231,42 +214,37 @@
             (push line lines)
             (forward-line 1)))))))
 
-(defun move-text-internal (arg)
-  (cond
-   ((and mark-active transient-mark-mode)
-    (if (> (point) (mark))
-        (exchange-point-and-mark))
-    (let ((column (current-column))
-          (text (delete-and-extract-region (point) (mark))))
-      (forward-line arg)
-      (move-to-column column t)
-      (set-mark (point))
-      (insert text)
-      (exchange-point-and-mark)
-      (setq deactivate-mark nil)))
-   (t
-    (beginning-of-line)
-    (when (or (> arg 0) (not (bobp)))
-      (forward-line)
-      (when (or (< arg 0) (not (eobp)))
-        (transpose-lines arg))
-      (forward-line -1)))))
-
-(defun move-text-down (arg)
-  "Move region (transient-mark-mode active) or current line
-  arg lines down."
-  (interactive "*p")
-  (move-text-internal arg))
-
-(defun move-text-up (arg)
-  "Move region (transient-mark-mode active) or current line
-  arg lines up."
-  (interactive "*p")
-  (move-text-internal (- arg)))
-
 (defun open-init-file ()
   (interactive)
   (find-file "~/.emacs.d/init.el"))
+
+;;
+;; Never understood why Emacs doesn't have this function.
+;;
+(defun rename-file-and-buffer (new-name)
+ "Renames both current buffer and file it's visiting to NEW-NAME." (interactive "sNew name: ")
+ (let ((name (buffer-name))
+	(filename (buffer-file-name)))
+ (if (not filename)
+	(message "Buffer '%s' is not visiting a file!" name)
+ (if (get-buffer new-name)
+	 (message "A buffer named '%s' already exists!" new-name)
+   (progn 	 (rename-file name new-name 1) 	 (rename-buffer new-name) 	 (set-visited-file-name new-name) 	 (set-buffer-modified-p nil)))))) ;;
+
+;; Never understood why Emacs doesn't have this function, either.
+;;
+(defun move-buffer-file (dir)
+ "Moves both current buffer and file it's visiting to DIR." (interactive "DNew directory: ")
+ (let* ((name (buffer-name))
+	 (filename (buffer-file-name))
+	 (dir
+	 (if (string-match dir "\\(?:/\\|\\\\)$")
+	 (substring dir 0 -1) dir))
+	 (newname (concat dir "/" name)))
+
+ (if (not filename)
+	(message "Buffer '%s' is not visiting a file!" name)
+ (progn 	(copy-file filename newname 1) 	(delete-file filename) 	(set-visited-file-name newname) 	(set-buffer-modified-p nil) 	t)))) 
 
 ;;
 ;; Custom set variables
@@ -280,9 +258,6 @@
  '(custom-safe-themes
    (quote
     ("bf648fd77561aae6722f3d53965a9eb29b08658ed045207fe32ffed90433eb52" "53c542b560d232436e14619d058f81434d6bbcdc42e00a4db53d2667d841702e" "146d24de1bb61ddfa64062c29b5ff57065552a7c4019bee5d869e938782dfc2a" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "60f04e478dedc16397353fb9f33f0d895ea3dab4f581307fbf0aa2f07e658a40" default)))
- '(drupal-convert-line-ending nil)
- '(drupal-delete-trailing-whitespace (quote never))
- '(geben-pause-at-entry-line t)
  '(inhibit-startup-screen t)
  '(ispell-program-name "aspell")
  '(mouse-avoidance-mode nil nil (avoid))
@@ -434,12 +409,7 @@
                 (lambda ()
                   (interactive)
                   (join-line -1)))
-(global-set-key (kbd "<C-S-down>") 'move-line-down)
-(global-set-key (kbd "<C-S-up>") 'move-line-up)
 (global-set-key [remap goto-line] 'goto-line-with-feedback)
-(global-set-key (kbd "C-'")  'insert-php-debug)
-(global-set-key [\M-\S-up] 'move-text-up)
-(global-set-key [\M-\S-down] 'move-text-down)
 (global-set-key [f1] 'shell)
 (global-set-key [f5] 'refresh-file)
 (global-set-key [f7] 'call-last-kbd-macro)
