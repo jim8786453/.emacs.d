@@ -19,8 +19,7 @@
 
 ;; Set up extra package sources.
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                         ("marmalade" . "http://marmalade-repo.org/packages/")
-                         ("melpa" . "http://melpa.milkbox.net/packages/")
+                         ("melpa-stable" . "https://stable.melpa.org/packages/")
                          ("elpy" . "https://jorgenschaefer.github.io/packages/")))
 
 ;; Guarantee all packages are installed on start
@@ -31,6 +30,7 @@
     dash
     elpy
     epc
+    exec-path-from-shell
     fullscreen-mode
     git-gutter
     helm
@@ -244,7 +244,7 @@
 
  (if (not filename)
 	(message "Buffer '%s' is not visiting a file!" name)
- (progn 	(copy-file filename newname 1) 	(delete-file filename) 	(set-visited-file-name newname) 	(set-buffer-modified-p nil) 	t)))) 
+ (progn 	(copy-file filename newname 1) 	(delete-file filename) 	(set-visited-file-name newname) 	(set-buffer-modified-p nil) 	t))))
 
 ;;
 ;; Custom set variables
@@ -391,7 +391,7 @@
 (setq tramp-default-method "ssh")
 (set-time-zone-rule "GMT-1")
 (fset 'yes-or-no-p 'y-or-n-p)
-(set-face-attribute 'default nil :height 140)
+(set-face-attribute 'default nil :height 160)
 (setenv "GIT_ASKPASS" "git-gui--askpass")
 (global-git-gutter-mode +1)
 
@@ -411,6 +411,7 @@
                   (join-line -1)))
 (global-set-key [remap goto-line] 'goto-line-with-feedback)
 (global-set-key [f1] 'shell)
+(global-set-key [f2] 'helm-projectile-grep)
 (global-set-key [f5] 'refresh-file)
 (global-set-key [f7] 'call-last-kbd-macro)
 (global-set-key (kbd "<f12>") 'ispell-word)
@@ -438,8 +439,12 @@
   (elpy-enable))
 
 ;;
-;; Do this last so we have a visual clue initialisation is finished.
+;; Mac OSX
 
+(when (memq window-system '(mac ns))
+  (exec-path-from-shell-initialize))
+
+;; Do this last so we have a visual clue initialisation is finished.
 (load-theme 'wombat)
 
 (provide '.emacs)
