@@ -15,12 +15,13 @@
 ;; Packages
 
 (require 'package)
-(package-initialize)
 
 ;; Set up extra package sources.
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                         ("melpa-stable" . "https://stable.melpa.org/packages/")
+                         ("melpa" . "https://melpa.org/packages/")
                          ("elpy" . "https://jorgenschaefer.github.io/packages/")))
+
+(package-initialize)
 
 ;; Guarantee all packages are installed on start
 (defvar packages-list
@@ -31,7 +32,6 @@
     elpy
     epc
     exec-path-from-shell
-    fullscreen-mode
     git-gutter
     helm
     helm-projectile
@@ -64,6 +64,7 @@
 (require 'helm)
 (require 'helm-config)
 (require 'ispell)
+(require 'helm-projectile)
 
 ;;
 ;; Custom functions
@@ -318,6 +319,7 @@
 (setq projectile-enable-caching nil)
 (setq projectile-completion-system 'helm)
 (setq projectile-switch-project-action 'helm-projectile)
+(setq projectile-use-git-grep t)
 (helm-projectile-on)
 
 ;;
@@ -391,7 +393,7 @@
 (setq tramp-default-method "ssh")
 (set-time-zone-rule "GMT-1")
 (fset 'yes-or-no-p 'y-or-n-p)
-(set-face-attribute 'default nil :height 160)
+(set-face-attribute 'default nil :height 140)
 (setenv "GIT_ASKPASS" "git-gui--askpass")
 (global-git-gutter-mode +1)
 
@@ -412,6 +414,7 @@
 (global-set-key [remap goto-line] 'goto-line-with-feedback)
 (global-set-key [f1] 'shell)
 (global-set-key [f2] 'helm-projectile-grep)
+(global-set-key (kbd "C-<f2>") 'projectile-grep)
 (global-set-key [f5] 'refresh-file)
 (global-set-key [f7] 'call-last-kbd-macro)
 (global-set-key (kbd "<f12>") 'ispell-word)
@@ -433,16 +436,20 @@
 ;;
 ;; Python
 
-(setq python-envs-location "~/python-envs/")
-(when (file-exists-p python-envs-location)
-  (package-initialize)
-  (elpy-enable))
+(elpy-enable)
 
 ;;
 ;; Mac OSX
 
 (when (memq window-system '(mac ns))
   (exec-path-from-shell-initialize))
+
+;;
+;; X11
+(when (memq window-system '(x))
+  (setq x-alt-keysym 'meta)
+  (setq normal-erase-is-backspace t)
+  (global-set-key (kbd "M-3") '(lambda () (interactive) (insert "#"))))
 
 ;; Do this last so we have a visual clue initialisation is finished.
 (load-theme 'wombat)
