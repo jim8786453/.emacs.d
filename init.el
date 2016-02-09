@@ -437,11 +437,6 @@
   (setq inferior-lisp-program "sbcl"))
 
 ;;
-;; Python
-
-(elpy-enable)
-
-;;
 ;; Mac OSX
 
 (when (memq window-system '(mac ns))
