@@ -18,8 +18,7 @@
 
 ;; Set up extra package sources.
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                         ("melpa" . "https://melpa.org/packages/")
-                         ("elpy" . "https://jorgenschaefer.github.io/packages/")))
+                         ("melpa" . "https://melpa.org/packages/")))
 
 (package-initialize)
 
@@ -29,7 +28,6 @@
     auto-complete
     avy
     dash
-    elpy
     epc
     exec-path-from-shell
     git-gutter
@@ -396,6 +394,7 @@
 (set-face-attribute 'default nil :height 140)
 (setenv "GIT_ASKPASS" "git-gui--askpass")
 (global-git-gutter-mode +1)
+(put 'erase-buffer 'disabled nil)
 
 ;;
 ;; Bindings
@@ -413,8 +412,8 @@
                   (join-line -1)))
 (global-set-key [remap goto-line] 'goto-line-with-feedback)
 (global-set-key [f1] 'shell)
-(global-set-key [f2] 'helm-projectile-grep)
-(global-set-key (kbd "C-<f2>") 'projectile-grep)
+(global-set-key [f2] 'projectile-grep)
+(global-set-key (kbd "C-<f2>") 'helm-projectile-grep)
 (global-set-key [f5] 'refresh-file)
 (global-set-key [f7] 'call-last-kbd-macro)
 (global-set-key (kbd "<f12>") 'ispell-word)
