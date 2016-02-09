@@ -247,6 +247,10 @@
 	(message "Buffer '%s' is not visiting a file!" name)
  (progn 	(copy-file filename newname 1) 	(delete-file filename) 	(set-visited-file-name newname) 	(set-buffer-modified-p nil) 	t))))
 
+
+(defun set-M-3-to-hash ()
+  (global-set-key (kbd "M-3") '(lambda () (interactive) (insert "#"))))
+
 ;;
 ;; Custom set variables
 
@@ -372,7 +376,7 @@
 (setq c-basic-offset 2)
 (local-set-key (kbd "RET") 'newline-and-indent)
 (setq browse-url-browser-function 'browse-url-default-windows-browser)
-(setq visible-bell t)
+(setq visible-bell nil)
 (if (fboundp 'fringe-mode)
     (fringe-mode 4))
 (setq transient-mark-mode nil)
@@ -442,14 +446,21 @@
 ;; Mac OSX
 
 (when (memq window-system '(mac ns))
-  (exec-path-from-shell-initialize))
+  (exec-path-from-shell-initialize)
+  (set-M-3-to-hash))
 
 ;;
 ;; X11
 (when (memq window-system '(x))
   (setq x-alt-keysym 'meta)
   (setq normal-erase-is-backspace t)
-  (global-set-key (kbd "M-3") '(lambda () (interactive) (insert "#"))))
+  (set-M-3-to-hash))
+
+;;
+;; Local customisations
+(setq cust-location "~/.emacs.d/init_local.el")
+(when (file-exists-p cust-location)
+  (load cust-location))
 
 ;; Do this last so we have a visual clue initialisation is finished.
 (load-theme 'wombat)
