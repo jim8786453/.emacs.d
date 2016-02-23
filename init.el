@@ -24,8 +24,7 @@
 
 ;; Guarantee all packages are installed on start
 (defvar packages-list
-  '(ace-window
-    auto-complete
+  '(auto-complete
     avy
     dash
     epc
@@ -404,6 +403,7 @@
 (setenv "GIT_ASKPASS" "git-gui--askpass")
 (global-git-gutter-mode +1)
 (put 'erase-buffer 'disabled nil)
+(setq mouse-wheel-progressive-speed nil)
 
 ;;
 ;; Bindings
@@ -431,8 +431,8 @@
 (define-key dired-mode-map
   (vector 'remap 'beginning-of-buffer) 'dired-back-to-top)
 (global-set-key (kbd "C-c j") 'avy-goto-word-or-subword-1)
-(global-set-key (kbd "C-x o") 'ace-window)
 (global-set-key (kbd "C-c m") 'open-magit-status)
+(global-set-key (kbd "M-<tab>") 'other-window)
 
 ;;
 ;; Slime
