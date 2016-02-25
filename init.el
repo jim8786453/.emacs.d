@@ -323,6 +323,7 @@
 (setq projectile-switch-project-action 'helm-projectile)
 (setq projectile-use-git-grep t)
 (helm-projectile-on)
+(add-to-list 'projectile-globally-ignored-files "*.fasl")
 
 ;;
 ;; Helm
