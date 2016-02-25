@@ -24,8 +24,7 @@
 
 ;; Guarantee all packages are installed on start
 (defvar packages-list
-  '(ace-window
-    auto-complete
+  '(auto-complete
     avy
     dash
     epc
@@ -249,6 +248,11 @@
 (defun set-M-3-to-hash ()
   (global-set-key (kbd "M-3") '(lambda () (interactive) (insert "#"))))
 
+(defun open-magit-status ()
+  (interactive)
+  (magit-status)
+  (delete-other-windows))
+
 ;;
 ;; Custom set variables
 
@@ -260,7 +264,7 @@
  '(column-number-mode t)
  '(custom-safe-themes
    (quote
-    ("bf648fd77561aae6722f3d53965a9eb29b08658ed045207fe32ffed90433eb52" "53c542b560d232436e14619d058f81434d6bbcdc42e00a4db53d2667d841702e" "146d24de1bb61ddfa64062c29b5ff57065552a7c4019bee5d869e938782dfc2a" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "60f04e478dedc16397353fb9f33f0d895ea3dab4f581307fbf0aa2f07e658a40" default)))
+    ("20e359ef1818a838aff271a72f0f689f5551a27704bf1c9469a5c2657b417e6c" "bf648fd77561aae6722f3d53965a9eb29b08658ed045207fe32ffed90433eb52" "53c542b560d232436e14619d058f81434d6bbcdc42e00a4db53d2667d841702e" "146d24de1bb61ddfa64062c29b5ff57065552a7c4019bee5d869e938782dfc2a" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "60f04e478dedc16397353fb9f33f0d895ea3dab4f581307fbf0aa2f07e658a40" default)))
  '(inhibit-startup-screen t)
  '(ispell-program-name "aspell")
  '(mouse-avoidance-mode nil nil (avoid))
@@ -400,6 +404,7 @@
 (setenv "GIT_ASKPASS" "git-gui--askpass")
 (global-git-gutter-mode +1)
 (put 'erase-buffer 'disabled nil)
+(setq mouse-wheel-progressive-speed nil)
 
 ;;
 ;; Bindings
@@ -427,7 +432,8 @@
 (define-key dired-mode-map
   (vector 'remap 'beginning-of-buffer) 'dired-back-to-top)
 (global-set-key (kbd "C-c j") 'avy-goto-word-or-subword-1)
-(global-set-key (kbd "C-x o") 'ace-window)
+(global-set-key (kbd "C-c m") 'open-magit-status)
+(global-set-key (kbd "M-<tab>") 'other-window)
 
 ;;
 ;; Slime
@@ -458,7 +464,7 @@
   (load cust-location))
 
 ;; Do this last so we have a visual clue initialisation is finished.
-(load-theme 'wombat)
+(load-theme 'zenburn)
 
 (provide '.emacs)
 ;;; .emacs ends here
