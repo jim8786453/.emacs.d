@@ -216,6 +216,7 @@
   (interactive)
   (find-file "~/.emacs.d/init.el"))
 
+
 ;;
 ;; Never understood why Emacs doesn't have this function.
 ;;
@@ -324,7 +325,7 @@
 (setq projectile-indexing-method 'alien)
 (setq projectile-enable-caching nil)
 (setq projectile-completion-system 'helm)
-(setq projectile-switch-project-action 'helm-projectile)
+(setq projectile-switch-project-action 'open-magit-status)
 (setq projectile-use-git-grep t)
 (helm-projectile-on)
 
@@ -432,6 +433,7 @@
   (vector 'remap 'beginning-of-buffer) 'dired-back-to-top)
 (global-set-key (kbd "C-c j") 'avy-goto-word-or-subword-1)
 (global-set-key (kbd "C-c m") 'open-magit-status)
+(global-set-key (kbd "C-c g") 'open-magit-status)
 (global-set-key (kbd "M-<tab>") 'other-window)
 
 ;;
