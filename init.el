@@ -328,6 +328,7 @@
 (setq projectile-switch-project-action 'open-magit-status)
 (setq projectile-use-git-grep t)
 (helm-projectile-on)
+(add-to-list 'projectile-globally-ignored-files "*.fasl")
 
 ;;
 ;; Helm
