@@ -254,6 +254,20 @@
   (magit-status)
   (delete-other-windows))
 
+(defun transpose-words-back (arg)
+  (interactive "*p")
+  (transpose-subr 'backward-word arg))
+
+(defun endless/fill-or-unfill ()
+  "Like `fill-paragraph', but unfill if used twice."
+  (interactive)
+  (let ((fill-column
+         (if (eq last-command 'endless/fill-or-unfill)
+             (progn (setq this-command nil)
+                    (point-max))
+           fill-column)))
+    (call-interactively #'fill-paragraph)))
+
 ;;
 ;; Custom set variables
 
@@ -436,6 +450,8 @@
 (global-set-key (kbd "C-c m") 'open-magit-status)
 (global-set-key (kbd "C-c g") 'open-magit-status)
 (global-set-key (kbd "M-<tab>") 'other-window)
+(global-set-key [remap fill-paragraph]
+                #'endless/fill-or-unfill)
 
 ;;
 ;; Slime
