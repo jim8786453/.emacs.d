@@ -37,6 +37,7 @@
     multiple-cursors
     paredit
     projectile
+    realgud
     undo-tree
     ) "List of packages needs to be installed at launch")
 
@@ -279,7 +280,7 @@
  '(column-number-mode t)
  '(custom-safe-themes
    (quote
-    ("20e359ef1818a838aff271a72f0f689f5551a27704bf1c9469a5c2657b417e6c" "bf648fd77561aae6722f3d53965a9eb29b08658ed045207fe32ffed90433eb52" "53c542b560d232436e14619d058f81434d6bbcdc42e00a4db53d2667d841702e" "146d24de1bb61ddfa64062c29b5ff57065552a7c4019bee5d869e938782dfc2a" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "60f04e478dedc16397353fb9f33f0d895ea3dab4f581307fbf0aa2f07e658a40" default)))
+    ("40f6a7af0dfad67c0d4df2a1dd86175436d79fc69ea61614d668a635c2cd94ab" "20e359ef1818a838aff271a72f0f689f5551a27704bf1c9469a5c2657b417e6c" "bf648fd77561aae6722f3d53965a9eb29b08658ed045207fe32ffed90433eb52" "53c542b560d232436e14619d058f81434d6bbcdc42e00a4db53d2667d841702e" "146d24de1bb61ddfa64062c29b5ff57065552a7c4019bee5d869e938782dfc2a" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "60f04e478dedc16397353fb9f33f0d895ea3dab4f581307fbf0aa2f07e658a40" default)))
  '(inhibit-startup-screen t)
  '(ispell-program-name "aspell")
  '(mouse-avoidance-mode nil nil (avoid))
@@ -480,6 +481,9 @@
 (setq cust-location "~/.emacs.d/init_local.el")
 (when (file-exists-p cust-location)
   (load cust-location))
+
+;; Realgud
+(load-library "realgud")
 
 ;; Do this last so we have a visual clue initialisation is finished.
 (load-theme 'zenburn)
