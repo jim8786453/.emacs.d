@@ -39,6 +39,7 @@
     projectile
     realgud
     undo-tree
+    sphinx-doc
     ) "List of packages needs to be installed at launch")
 
 (defun has-package-not-installed ()
@@ -252,8 +253,7 @@
 
 (defun open-magit-status ()
   (interactive)
-  (magit-status)
-  (delete-other-windows))
+  (magit-status))
 
 (defun transpose-words-back (arg)
   (interactive "*p")
@@ -268,6 +268,29 @@
                     (point-max))
            fill-column)))
     (call-interactively #'fill-paragraph)))
+
+(defun find-file-at-point-with-line()
+  "if file has an attached line num goto that line, ie boom.rb:12"
+  (interactive)
+  (setq line-num 0)
+  (save-excursion
+    (search-forward-regexp "[^ ]:" (point-max) t)
+    (if (looking-at "[0-9]+")
+        (setq line-num (string-to-number (buffer-substring (match-beginning 0) (match-end 0))))))
+  (display-buffer (find-file (ffap-guesser)))
+  (if (not (equal line-num 0))
+      (goto-line line-num))
+  (recenter))
+
+(defun frame-adjust ()
+  (interactive)
+  (if (eq (frame-width) 105)
+      (progn
+        (set-frame-size (selected-frame) 190 53)
+        (split-window-right))
+    (progn
+      (set-frame-size (selected-frame) 105 53)
+      (delete-other-windows))))
 
 ;;
 ;; Custom set variables
@@ -291,6 +314,11 @@
  '(org-clock-mode-line-total (quote today))
  '(org-enforce-todo-dependencies t)
  '(org-startup-indented t)
+ '(realgud-safe-mode nil)
+ '(safe-local-variable-values
+   (quote
+    ((projectile-project-compilation-cmd . "SQLALCHEMY_ECHO=1 make run-server")
+     (projectile-project-test-cmd . "py.test -svk unit -n 2"))))
  '(tab-width 2)
  '(tool-bar-mode nil)
  '(uniquify-buffer-name-style (quote forward) nil (uniquify)))
@@ -332,6 +360,16 @@
   (let ((buffer-backed-up nil))
     (backup-buffer)))
 (add-hook 'before-save-hook  'force-backup-of-buffer)
+
+;;
+;; Dired
+(setq dired-omit-files
+      (rx (or (seq bol (? ".") "#")         ;; emacs autosave files
+              (seq "~" eol)                 ;; backup-files
+              (seq bol "svn" eol)           ;; svn dirs
+              (seq ".pyc" eol)
+              )))
+(add-hook 'dired-mode-hook (lambda () (dired-omit-mode 1)))
 
 ;;
 ;; Projectile
@@ -453,6 +491,7 @@
 (global-set-key (kbd "M-<tab>") 'other-window)
 (global-set-key [remap fill-paragraph]
                 #'endless/fill-or-unfill)
+(global-set-key (kbd "C-.") 'find-file-at-point-with-line)
 
 ;;
 ;; Slime
