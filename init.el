@@ -317,7 +317,7 @@
  '(org-startup-indented t)
  '(package-selected-packages
    (quote
-    (zenburn-theme undo-tree sphinx-doc realgud paredit multiple-cursors magit jedi helm-projectile git-gutter exec-path-from-shell avy)))
+    (elpy zenburn-theme undo-tree sphinx-doc realgud paredit multiple-cursors magit jedi helm-projectile git-gutter exec-path-from-shell avy)))
  '(realgud-safe-mode nil)
  '(safe-local-variable-values
    (quote
@@ -463,6 +463,8 @@
 (global-git-gutter-mode +1)
 (put 'erase-buffer 'disabled nil)
 (setq mouse-wheel-progressive-speed nil)
+(setq split-height-threshold nil)
+(setq split-width-threshold 0)
 
 ;;
 ;; Bindings
@@ -519,17 +521,29 @@
   (setq normal-erase-is-backspace t)
   (set-M-3-to-hash))
 
-;;
-;; Local customisations
-(setq cust-location "~/.emacs.d/init_local.el")
-(when (file-exists-p cust-location)
-  (load cust-location))
-
 ;; Realgud
 (load-library "realgud")
 
 ;; Do this last so we have a visual clue initialisation is finished.
 (load-theme 'zenburn)
+
+;; Python
+(defun insert-py-debug ()
+  (interactive)
+  (back-to-indentation)
+  (insert "import pdb; pdb.set_trace();")
+  (electric-newline-and-maybe-indent)
+  (indent-for-tab-command))
+(global-set-key (kbd "C-'") 'insert-py-debug)
+
+;; Javascript
+(setq js-indent-level 2)
+
+;;
+;; Local customisations
+(setq cust-location "~/.emacs.d/init_local.el")
+(when (file-exists-p cust-location)
+  (load cust-location))
 
 (provide '.emacs)
 ;;; .emacs ends here
