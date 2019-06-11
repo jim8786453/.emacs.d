@@ -24,8 +24,7 @@
 
 ;; Guarantee all packages are installed on start
 (defvar packages-list
-  '(auto-complete
-    avy
+  '(avy
     dash
     epc
     exec-path-from-shell
@@ -319,7 +318,7 @@
  '(org-startup-indented t)
  '(package-selected-packages
    (quote
-    (elpy zenburn-theme undo-tree sphinx-doc realgud paredit multiple-cursors magit jedi helm-projectile git-gutter exec-path-from-shell avy)))
+    (csharp-mode elpy zenburn-theme undo-tree sphinx-doc realgud paredit multiple-cursors magit jedi helm-projectile git-gutter exec-path-from-shell avy)))
  '(realgud-safe-mode nil)
  '(safe-local-variable-values
    (quote
@@ -375,7 +374,6 @@
               (seq bol "svn" eol)           ;; svn dirs
               (seq ".pyc" eol)
               )))
-(add-hook 'dired-mode-hook (lambda () (dired-omit-mode 1)))
 
 ;;
 ;; Projectile
@@ -477,8 +475,6 @@
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 (define-key global-map "\C-\M-Q" 'unfill-region)
-(define-key dired-mode-map
-  (vector 'remap 'end-of-buffer) 'dired-jump-to-bottom)
 (global-set-key (kbd "M-j")
                 (lambda ()
                   (interactive)
@@ -492,8 +488,6 @@
 (global-set-key (kbd "<f12>") 'ispell-word)
 (global-set-key (kbd "C-<f8>") 'flyspell-mode)
 (global-set-key [f8] 'open-init-file)
-(define-key dired-mode-map
-  (vector 'remap 'beginning-of-buffer) 'dired-back-to-top)
 (global-set-key (kbd "C-c j") 'avy-goto-word-or-subword-1)
 (global-set-key (kbd "C-c m") 'open-magit-status)
 (global-set-key (kbd "C-c g") 'open-magit-status)
@@ -528,7 +522,8 @@
 (load-library "realgud")
 
 ;; Do this last so we have a visual clue initialisation is finished.
-(load-theme 'zenburn)
+(when (window-system)
+  (load-theme 'zenburn))
 
 ;; Python
 (defun insert-py-debug ()
