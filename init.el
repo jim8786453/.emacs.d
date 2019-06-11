@@ -22,8 +22,7 @@
 
 ;; Guarantee all packages are installed on start
 (defvar packages-list
-  '(auto-complete
-    avy
+  '(avy
     dash
     epc
     exec-path-from-shell
@@ -304,16 +303,19 @@
    '("ec5f697561eaf87b1d3b087dd28e61a2fc9860e4c862ea8e6b0b77bd4967d0ba" "f5512c02e0a6887e987a816918b7a684d558716262ac7ee2dd0437ab913eaec6" "40f6a7af0dfad67c0d4df2a1dd86175436d79fc69ea61614d668a635c2cd94ab" "20e359ef1818a838aff271a72f0f689f5551a27704bf1c9469a5c2657b417e6c" "bf648fd77561aae6722f3d53965a9eb29b08658ed045207fe32ffed90433eb52" "53c542b560d232436e14619d058f81434d6bbcdc42e00a4db53d2667d841702e" "146d24de1bb61ddfa64062c29b5ff57065552a7c4019bee5d869e938782dfc2a" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "60f04e478dedc16397353fb9f33f0d895ea3dab4f581307fbf0aa2f07e658a40" default))
  '(inhibit-startup-screen t)
  '(ispell-program-name "aspell")
+ '(ispell-dictionary "british")
  '(mouse-avoidance-mode nil nil (avoid))
  '(mouse-wheel-mode t)
  '(org-agenda-dim-blocked-tasks nil)
  '(org-agenda-todo-list-sublevels nil)
- '(org-clock-clocked-in-display 'mode-line)
- '(org-clock-mode-line-total 'today)
+ '(org-clock-clocked-in-display (quote mode-line))
+ '(org-clock-mode-line-total (quote today))
+ '(org-log-done 'time)
  '(org-enforce-todo-dependencies t)
  '(org-startup-indented t)
  '(package-selected-packages
-   '(js2-mode slime elpy zenburn-theme undo-tree sphinx-doc realgud paredit multiple-cursors magit jedi helm-projectile git-gutter exec-path-from-shell avy))
+   (quote
+    (js2-mode slime elpy zenburn-theme undo-tree sphinx-doc realgud paredit multiple-cursors magit jedi helm-projectile git-gutter exec-path-from-shell avy)))
  '(realgud-safe-mode nil)
  '(safe-local-variable-values
    (quote
@@ -370,6 +372,7 @@
 (setq projectile-indexing-method 'alien)
 (setq projectile-enable-caching nil)
 (setq projectile-completion-system 'helm)
+(setq projectile-switch-project-action 'magit-status)
 (setq projectile-switch-project-action 'open-magit-status)
 (setq projectile-use-git-grep t)
 (helm-projectile-on)
@@ -508,7 +511,8 @@
 (load-library "realgud")
 
 ;; Do this last so we have a visual clue initialisation is finished.
-(load-theme 'zenburn)
+(when (window-system)
+  (load-theme 'zenburn))
 
 ;; Python
 (defun insert-py-debug ()
@@ -526,12 +530,16 @@
 (add-hook 'before-save-hook
           'delete-trailing-whitespace)
 
+;; Magit
+(setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
+
 ;;
 ;; Local customisations
 (setq cust-location "~/.emacs.d/init_local.el")
 (when (file-exists-p cust-location)
   (load cust-location))
 
+(set-time-zone-rule "GMT")
 
 (provide '.emacs)
 ;;; .emacs ends here
