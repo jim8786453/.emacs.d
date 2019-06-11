@@ -20,8 +20,6 @@
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("melpa" . "https://melpa.org/packages/")))
 
-(package-initialize)
-
 ;; Guarantee all packages are installed on start
 (defvar packages-list
   '(auto-complete
@@ -303,21 +301,19 @@
  ;; If there is more than one, they won't work right.
  '(column-number-mode t)
  '(custom-safe-themes
-   (quote
-    ("f5512c02e0a6887e987a816918b7a684d558716262ac7ee2dd0437ab913eaec6" "40f6a7af0dfad67c0d4df2a1dd86175436d79fc69ea61614d668a635c2cd94ab" "20e359ef1818a838aff271a72f0f689f5551a27704bf1c9469a5c2657b417e6c" "bf648fd77561aae6722f3d53965a9eb29b08658ed045207fe32ffed90433eb52" "53c542b560d232436e14619d058f81434d6bbcdc42e00a4db53d2667d841702e" "146d24de1bb61ddfa64062c29b5ff57065552a7c4019bee5d869e938782dfc2a" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "60f04e478dedc16397353fb9f33f0d895ea3dab4f581307fbf0aa2f07e658a40" default)))
+   '("ec5f697561eaf87b1d3b087dd28e61a2fc9860e4c862ea8e6b0b77bd4967d0ba" "f5512c02e0a6887e987a816918b7a684d558716262ac7ee2dd0437ab913eaec6" "40f6a7af0dfad67c0d4df2a1dd86175436d79fc69ea61614d668a635c2cd94ab" "20e359ef1818a838aff271a72f0f689f5551a27704bf1c9469a5c2657b417e6c" "bf648fd77561aae6722f3d53965a9eb29b08658ed045207fe32ffed90433eb52" "53c542b560d232436e14619d058f81434d6bbcdc42e00a4db53d2667d841702e" "146d24de1bb61ddfa64062c29b5ff57065552a7c4019bee5d869e938782dfc2a" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "60f04e478dedc16397353fb9f33f0d895ea3dab4f581307fbf0aa2f07e658a40" default))
  '(inhibit-startup-screen t)
  '(ispell-program-name "aspell")
  '(mouse-avoidance-mode nil nil (avoid))
  '(mouse-wheel-mode t)
  '(org-agenda-dim-blocked-tasks nil)
  '(org-agenda-todo-list-sublevels nil)
- '(org-clock-clocked-in-display (quote mode-line))
- '(org-clock-mode-line-total (quote today))
+ '(org-clock-clocked-in-display 'mode-line)
+ '(org-clock-mode-line-total 'today)
  '(org-enforce-todo-dependencies t)
  '(org-startup-indented t)
  '(package-selected-packages
-   (quote
-    (elpy zenburn-theme undo-tree sphinx-doc realgud paredit multiple-cursors magit jedi helm-projectile git-gutter exec-path-from-shell avy)))
+   '(js2-mode slime elpy zenburn-theme undo-tree sphinx-doc realgud paredit multiple-cursors magit jedi helm-projectile git-gutter exec-path-from-shell avy))
  '(realgud-safe-mode nil)
  '(safe-local-variable-values
    (quote
@@ -325,7 +321,7 @@
      (projectile-project-test-cmd . "py.test -svk unit -n 2"))))
  '(tab-width 2)
  '(tool-bar-mode nil)
- '(uniquify-buffer-name-style (quote forward) nil (uniquify)))
+ '(uniquify-buffer-name-style 'forward nil (uniquify)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -366,18 +362,10 @@
 (add-hook 'before-save-hook  'force-backup-of-buffer)
 
 ;;
-;; Dired
-(setq dired-omit-files
-      (rx (or (seq bol (? ".") "#")         ;; emacs autosave files
-              (seq "~" eol)                 ;; backup-files
-              (seq bol "svn" eol)           ;; svn dirs
-              (seq ".pyc" eol)
-              )))
-(add-hook 'dired-mode-hook (lambda () (dired-omit-mode 1)))
-
-;;
 ;; Projectile
-
+(projectile-mode +1)
+(define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 (projectile-global-mode)
 (setq projectile-indexing-method 'alien)
 (setq projectile-enable-caching nil)
@@ -436,7 +424,6 @@
 (setq-default indent-tabs-mode nil)
 (setq c-basic-offset 2)
 (local-set-key (kbd "RET") 'newline-and-indent)
-(setq browse-url-browser-function 'browse-url-default-windows-browser)
 (setq visible-bell nil)
 (if (fboundp 'fringe-mode)
     (fringe-mode 4))
@@ -474,8 +461,6 @@
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 (define-key global-map "\C-\M-Q" 'unfill-region)
-(define-key dired-mode-map
-  (vector 'remap 'end-of-buffer) 'dired-jump-to-bottom)
 (global-set-key (kbd "M-j")
                 (lambda ()
                   (interactive)
@@ -489,8 +474,6 @@
 (global-set-key (kbd "<f12>") 'ispell-word)
 (global-set-key (kbd "C-<f8>") 'flyspell-mode)
 (global-set-key [f8] 'open-init-file)
-(define-key dired-mode-map
-  (vector 'remap 'beginning-of-buffer) 'dired-back-to-top)
 (global-set-key (kbd "C-c j") 'avy-goto-word-or-subword-1)
 (global-set-key (kbd "C-c m") 'open-magit-status)
 (global-set-key (kbd "C-c g") 'open-magit-status)
@@ -539,11 +522,16 @@
 ;; Javascript
 (setq js-indent-level 2)
 
+;; Whitespace
+(add-hook 'before-save-hook
+          'delete-trailing-whitespace)
+
 ;;
 ;; Local customisations
 (setq cust-location "~/.emacs.d/init_local.el")
 (when (file-exists-p cust-location)
   (load cust-location))
+
 
 (provide '.emacs)
 ;;; .emacs ends here
