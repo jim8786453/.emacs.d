@@ -20,8 +20,6 @@
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("melpa" . "https://melpa.org/packages/")))
 
-(package-initialize)
-
 ;; Guarantee all packages are installed on start
 (defvar packages-list
   '(avy
@@ -318,7 +316,7 @@
  '(org-startup-indented t)
  '(package-selected-packages
    (quote
-    (csv-mode markdown-preview-mode csharp-mode elpy zenburn-theme undo-tree sphinx-doc realgud paredit multiple-cursors magit jedi helm-projectile git-gutter exec-path-from-shell avy)))
+    (csv-mode markdown-preview-mode csharp-mode js2-mode slime elpy zenburn-theme undo-tree sphinx-doc realgud paredit multiple-cursors magit jedi helm-projectile git-gutter exec-path-from-shell avy)))
  '(realgud-safe-mode nil)
  '(safe-local-variable-values
    (quote
@@ -326,7 +324,7 @@
      (projectile-project-test-cmd . "py.test -svk unit -n 2"))))
  '(tab-width 2)
  '(tool-bar-mode nil)
- '(uniquify-buffer-name-style (quote forward) nil (uniquify)))
+ '(uniquify-buffer-name-style 'forward nil (uniquify)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -367,18 +365,11 @@
 (add-hook 'before-save-hook  'force-backup-of-buffer)
 
 ;;
-;; Dired
-(setq dired-omit-files
-      (rx (or (seq bol (? ".") "#")         ;; emacs autosave files
-              (seq "~" eol)                 ;; backup-files
-              (seq bol "svn" eol)           ;; svn dirs
-              (seq ".pyc" eol)
-              )))
-
-;;
 ;; Projectile
-
-(projectile-mode)
+(projectile-mode +1)
+(define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+(projectile-global-mode)
 (setq projectile-indexing-method 'alien)
 (setq projectile-enable-caching nil)
 (setq projectile-completion-system 'helm)
@@ -437,7 +428,6 @@
 (setq-default indent-tabs-mode nil)
 (setq c-basic-offset 2)
 (local-set-key (kbd "RET") 'newline-and-indent)
-(setq browse-url-browser-function 'browse-url-default-windows-browser)
 (setq visible-bell nil)
 (if (fboundp 'fringe-mode)
     (fringe-mode 4))
@@ -536,6 +526,10 @@
 
 ;; Javascript
 (setq js-indent-level 2)
+
+;; Whitespace
+(add-hook 'before-save-hook
+          'delete-trailing-whitespace)
 
 ;; Magit
 (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
