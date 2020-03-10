@@ -16,9 +16,13 @@
 
 (require 'package)
 
-;; Set up extra package sources.
-(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                         ("melpa" . "https://melpa.org/packages/")))
+(setq package-archives '(
+                        ("elpa" . "http://tromey.com/elpa/")
+                        ("gnu" . "http://elpa.gnu.org/packages/")
+                        ("marmalade" . "http://marmalade-repo.org/packages/")
+                        ("melpa-stable" . "http://stable.melpa.org/packages/")))
+
+(package-initialize)
 
 ;; Guarantee all packages are installed on start
 (defvar packages-list
@@ -48,12 +52,15 @@
 (when (has-package-not-installed)
   ;; Check for new packages (package versions)
   (message "%s" "Get latest versions of all packages...")
+  (package-initialize)
   (package-refresh-contents)
   (message "%s" " done.")
   ;; Install the missing packages
   (dolist (p packages-list)
     (when (not (package-installed-p p))
       (package-install p))))
+
+
 
 ;;
 ;; Require.
@@ -301,7 +308,7 @@
  '(column-number-mode t)
  '(custom-safe-themes
    (quote
-    ("190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "f5512c02e0a6887e987a816918b7a684d558716262ac7ee2dd0437ab913eaec6" "40f6a7af0dfad67c0d4df2a1dd86175436d79fc69ea61614d668a635c2cd94ab" "20e359ef1818a838aff271a72f0f689f5551a27704bf1c9469a5c2657b417e6c" "bf648fd77561aae6722f3d53965a9eb29b08658ed045207fe32ffed90433eb52" "53c542b560d232436e14619d058f81434d6bbcdc42e00a4db53d2667d841702e" "146d24de1bb61ddfa64062c29b5ff57065552a7c4019bee5d869e938782dfc2a" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "60f04e478dedc16397353fb9f33f0d895ea3dab4f581307fbf0aa2f07e658a40" default)))
+    ("84890723510d225c45aaff941a7e201606a48b973f0121cb9bcb0b9399be8cba" "190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "f5512c02e0a6887e987a816918b7a684d558716262ac7ee2dd0437ab913eaec6" "40f6a7af0dfad67c0d4df2a1dd86175436d79fc69ea61614d668a635c2cd94ab" "20e359ef1818a838aff271a72f0f689f5551a27704bf1c9469a5c2657b417e6c" "bf648fd77561aae6722f3d53965a9eb29b08658ed045207fe32ffed90433eb52" "53c542b560d232436e14619d058f81434d6bbcdc42e00a4db53d2667d841702e" "146d24de1bb61ddfa64062c29b5ff57065552a7c4019bee5d869e938782dfc2a" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "60f04e478dedc16397353fb9f33f0d895ea3dab4f581307fbf0aa2f07e658a40" default)))
  '(inhibit-startup-screen t)
  '(ispell-dictionary "british")
  '(ispell-program-name "aspell")
@@ -316,7 +323,7 @@
  '(org-startup-indented t)
  '(package-selected-packages
    (quote
-    (csv-mode markdown-preview-mode csharp-mode js2-mode slime elpy zenburn-theme undo-tree sphinx-doc realgud paredit multiple-cursors magit jedi helm-projectile git-gutter exec-path-from-shell avy)))
+    (yaml-mode csv-mode markdown-preview-mode csharp-mode js2-mode slime elpy zenburn-theme undo-tree sphinx-doc realgud paredit multiple-cursors magit jedi helm-projectile git-gutter exec-path-from-shell avy)))
  '(realgud-safe-mode nil)
  '(safe-local-variable-values
    (quote
@@ -324,7 +331,7 @@
      (projectile-project-test-cmd . "py.test -svk unit -n 2"))))
  '(tab-width 2)
  '(tool-bar-mode nil)
- '(uniquify-buffer-name-style 'forward nil (uniquify)))
+ '(uniquify-buffer-name-style (quote forward) nil (uniquify)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -533,6 +540,7 @@
 
 ;; Magit
 (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
+(add-hook 'git-commit-setup-hook 'git-commit-turn-on-flyspell)
 
 ;;
 ;; Local customisations
