@@ -189,6 +189,9 @@
   (revert-buffer t t t)
   (message "%s" "File refreshed."))
 
+(when (display-graphic-p
+       (menu-bar-mode -1)))
+
 ;; Opposite of fill-paragraph.
 (defun unfill-paragraph ()
   "Takes a multi-line paragraph and makes it into a single line of text."
