@@ -311,7 +311,8 @@
  '(column-number-mode t)
  '(custom-safe-themes
    (quote
-    ("84890723510d225c45aaff941a7e201606a48b973f0121cb9bcb0b9399be8cba" "190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "f5512c02e0a6887e987a816918b7a684d558716262ac7ee2dd0437ab913eaec6" "40f6a7af0dfad67c0d4df2a1dd86175436d79fc69ea61614d668a635c2cd94ab" "20e359ef1818a838aff271a72f0f689f5551a27704bf1c9469a5c2657b417e6c" "bf648fd77561aae6722f3d53965a9eb29b08658ed045207fe32ffed90433eb52" "53c542b560d232436e14619d058f81434d6bbcdc42e00a4db53d2667d841702e" "146d24de1bb61ddfa64062c29b5ff57065552a7c4019bee5d869e938782dfc2a" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "60f04e478dedc16397353fb9f33f0d895ea3dab4f581307fbf0aa2f07e658a40" default)))
+    ("2a998a3b66a0a6068bcb8b53cd3b519d230dd1527b07232e54c8b9d84061d48d" "04790c9929eacf32d508b84d34e80ad2ee233f13f17767190531b8b350b9ef22" "ec5f761d75345d1cf96d744c50cf7c928959f075acf3f2631742d5c9fe2153ad" "4ea1959cfaa526b795b45e55f77724df4be982b9cd33da8d701df8cdce5b2955" "84890723510d225c45aaff941a7e201606a48b973f0121cb9bcb0b9399be8cba" "190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "f5512c02e0a6887e987a816918b7a684d558716262ac7ee2dd0437ab913eaec6" "40f6a7af0dfad67c0d4df2a1dd86175436d79fc69ea61614d668a635c2cd94ab" "20e359ef1818a838aff271a72f0f689f5551a27704bf1c9469a5c2657b417e6c" "bf648fd77561aae6722f3d53965a9eb29b08658ed045207fe32ffed90433eb52" "53c542b560d232436e14619d058f81434d6bbcdc42e00a4db53d2667d841702e" "146d24de1bb61ddfa64062c29b5ff57065552a7c4019bee5d869e938782dfc2a" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "60f04e478dedc16397353fb9f33f0d895ea3dab4f581307fbf0aa2f07e658a40" default)))
+ '(helm-completion-style (quote emacs))
  '(inhibit-startup-screen t)
  '(ispell-dictionary "british")
  '(ispell-program-name "aspell")
@@ -326,7 +327,7 @@
  '(org-startup-indented t)
  '(package-selected-packages
    (quote
-    (yaml-mode csv-mode markdown-preview-mode csharp-mode js2-mode slime elpy zenburn-theme undo-tree sphinx-doc realgud paredit multiple-cursors magit jedi helm-projectile git-gutter exec-path-from-shell avy)))
+    (yascroll company omnisharp base16-theme darktooth-theme nord-theme yaml-mode csv-mode markdown-preview-mode csharp-mode js2-mode slime elpy zenburn-theme undo-tree sphinx-doc realgud paredit multiple-cursors magit jedi helm-projectile git-gutter exec-path-from-shell avy)))
  '(realgud-safe-mode nil)
  '(safe-local-variable-values
    (quote
@@ -340,7 +341,14 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(highlight-indentation-face ((t (:inherit nil)))))
+ '(highlight-indentation-face ((t (:inherit nil))))
+ '(magit-diff-added ((((type tty)) (:foreground "green"))))
+ '(magit-diff-added-highlight ((((type tty)) (:foreground "LimeGreen"))))
+ '(magit-diff-context-highlight ((((type tty)) (:foreground "default"))))
+ '(magit-diff-file-heading ((((type tty)) nil)))
+ '(magit-diff-removed ((((type tty)) (:foreground "red"))))
+ '(magit-diff-removed-highlight ((((type tty)) (:foreground "IndianRed"))))
+ '(magit-section-highlight ((((type tty)) nil))))
 
 ;;
 ;; Backups
@@ -459,7 +467,8 @@
 (setq tramp-default-method "ssh")
 (set-time-zone-rule "GMT-1")
 (fset 'yes-or-no-p 'y-or-n-p)
-(set-face-attribute 'default nil :height 140)
+(set-face-attribute 'default nil :height 112)
+(set-default-font "Cascadia Code")
 (setenv "GIT_ASKPASS" "git-gui--askpass")
 (global-git-gutter-mode +1)
 (put 'erase-buffer 'disabled nil)
@@ -522,8 +531,10 @@
 (load-library "realgud")
 
 ;; Do this last so we have a visual clue initialisation is finished.
-(when (window-system)
-  (load-theme 'zenburn))
+(load-theme 'zenburn)
+
+
+
 
 ;; Python
 (defun insert-py-debug ()
@@ -544,6 +555,52 @@
 ;; Magit
 (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
 (add-hook 'git-commit-setup-hook 'git-commit-turn-on-flyspell)
+
+(defun disable-magit-highlight-in-buffer ()
+  (face-remap-add-relative 'magit-item-highlight '()))
+
+(add-hook 'magit-status-mode-hook 'disable-magit-highlight-in-buffer)
+
+;; Omnisharp
+(eval-after-load
+  'company
+  '(add-to-list 'company-backends #'company-omnisharp))
+
+(defun my-csharp-mode-setup ()
+  (omnisharp-mode)
+  (company-mode)
+  (flycheck-mode)
+
+  (setq indent-tabs-mode nil)
+  (setq c-syntactic-indentation t)
+  (c-set-style "ellemtel")
+  (setq c-basic-offset 4)
+  (setq truncate-lines t)
+  (setq tab-width 4)
+  (setq evil-shift-width 4)
+
+  ;csharp-mode README.md recommends this too
+  ;(electric-pair-mode 1)       ;; Emacs 24
+  ;(electric-pair-local-mode 1) ;; Emacs 25
+
+  (local-set-key (kbd "C-c r r") 'omnisharp-run-code-action-refactoring)
+  (local-set-key (kbd "C-c C-c") 'recompile))
+
+(add-hook 'csharp-mode-hook 'my-csharp-mode-setup t)
+
+;; Css
+(setq css-indent-offset 2)
+
+;; (require 'mouse)
+;; (xterm-mouse-mode t)
+;; (mouse-wheel-mode t)
+
+;; (global-set-key (kbd "<wheel-up>") '(lambda () (interactive) (scroll-up 1)))
+;; (global-set-key (kbd "<wheel-down>") '(lambda () (interactive) (scroll-down 1)))
+;; (define-key key-translation-map "\033[M'X1-" (kbd "<wheel-up>"))
+
+(require 'yascroll)
+(global-yascroll-bar-mode)
 
 ;;
 ;; Local customisations
