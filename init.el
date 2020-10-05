@@ -10,6 +10,7 @@
 ;; Common lisp is needed all the time so require that here.
 
 (require 'cl)
+(require 'format-spec)
 
 ;;
 ;; Packages
@@ -33,6 +34,7 @@
     git-gutter
     helm
     helm-projectile
+    helm-git-grep
     jedi
     magit
     multiple-cursors
@@ -311,7 +313,7 @@
  '(column-number-mode t)
  '(custom-safe-themes
    (quote
-    ("2a998a3b66a0a6068bcb8b53cd3b519d230dd1527b07232e54c8b9d84061d48d" "04790c9929eacf32d508b84d34e80ad2ee233f13f17767190531b8b350b9ef22" "ec5f761d75345d1cf96d744c50cf7c928959f075acf3f2631742d5c9fe2153ad" "4ea1959cfaa526b795b45e55f77724df4be982b9cd33da8d701df8cdce5b2955" "84890723510d225c45aaff941a7e201606a48b973f0121cb9bcb0b9399be8cba" "190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "f5512c02e0a6887e987a816918b7a684d558716262ac7ee2dd0437ab913eaec6" "40f6a7af0dfad67c0d4df2a1dd86175436d79fc69ea61614d668a635c2cd94ab" "20e359ef1818a838aff271a72f0f689f5551a27704bf1c9469a5c2657b417e6c" "bf648fd77561aae6722f3d53965a9eb29b08658ed045207fe32ffed90433eb52" "53c542b560d232436e14619d058f81434d6bbcdc42e00a4db53d2667d841702e" "146d24de1bb61ddfa64062c29b5ff57065552a7c4019bee5d869e938782dfc2a" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "60f04e478dedc16397353fb9f33f0d895ea3dab4f581307fbf0aa2f07e658a40" default)))
+    ("6b2c6e5bc1e89cf7d927d17f436626eac98a04fdab89e080f4e193f6d291c93d" "2a998a3b66a0a6068bcb8b53cd3b519d230dd1527b07232e54c8b9d84061d48d" "04790c9929eacf32d508b84d34e80ad2ee233f13f17767190531b8b350b9ef22" "ec5f761d75345d1cf96d744c50cf7c928959f075acf3f2631742d5c9fe2153ad" "4ea1959cfaa526b795b45e55f77724df4be982b9cd33da8d701df8cdce5b2955" "84890723510d225c45aaff941a7e201606a48b973f0121cb9bcb0b9399be8cba" "190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "f5512c02e0a6887e987a816918b7a684d558716262ac7ee2dd0437ab913eaec6" "40f6a7af0dfad67c0d4df2a1dd86175436d79fc69ea61614d668a635c2cd94ab" "20e359ef1818a838aff271a72f0f689f5551a27704bf1c9469a5c2657b417e6c" "bf648fd77561aae6722f3d53965a9eb29b08658ed045207fe32ffed90433eb52" "53c542b560d232436e14619d058f81434d6bbcdc42e00a4db53d2667d841702e" "146d24de1bb61ddfa64062c29b5ff57065552a7c4019bee5d869e938782dfc2a" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "60f04e478dedc16397353fb9f33f0d895ea3dab4f581307fbf0aa2f07e658a40" default)))
  '(helm-completion-style (quote emacs))
  '(inhibit-startup-screen t)
  '(ispell-dictionary "british")
@@ -327,7 +329,7 @@
  '(org-startup-indented t)
  '(package-selected-packages
    (quote
-    (yascroll company omnisharp base16-theme darktooth-theme nord-theme yaml-mode csv-mode markdown-preview-mode csharp-mode js2-mode slime elpy zenburn-theme undo-tree sphinx-doc realgud paredit multiple-cursors magit jedi helm-projectile git-gutter exec-path-from-shell avy)))
+    (swift-mode rainbow-mode helm-git-grep rjsx-mode company omnisharp base16-theme darktooth-theme nord-theme yaml-mode csv-mode markdown-preview-mode csharp-mode js2-mode slime elpy zenburn-theme undo-tree sphinx-doc realgud paredit multiple-cursors magit jedi helm-projectile git-gutter exec-path-from-shell avy)))
  '(realgud-safe-mode nil)
  '(safe-local-variable-values
    (quote
@@ -490,8 +492,7 @@
                   (join-line -1)))
 (global-set-key [remap goto-line] 'goto-line-with-feedback)
 (global-set-key [f1] 'shell)
-(global-set-key [f2] 'projectile-grep)
-(global-set-key (kbd "C-<f2>") 'helm-projectile-grep)
+(global-set-key [f2] 'helm-git-grep-at-point)
 (global-set-key [f5] 'refresh-file)
 (global-set-key [f7] 'call-last-kbd-macro)
 (global-set-key (kbd "<f12>") 'ispell-word)
@@ -540,9 +541,9 @@
 (defun insert-py-debug ()
   (interactive)
   (back-to-indentation)
-  (insert "import pdb; pdb.set_trace();")
-  (electric-newline-and-maybe-indent)
-  (indent-for-tab-command))
+  (insert "console.log();")
+  (indent-for-tab-command)
+  (backward-char 2))
 (global-set-key (kbd "C-'") 'insert-py-debug)
 
 ;; Javascript
@@ -599,9 +600,6 @@
 ;; (global-set-key (kbd "<wheel-down>") '(lambda () (interactive) (scroll-down 1)))
 ;; (define-key key-translation-map "\033[M'X1-" (kbd "<wheel-up>"))
 
-(require 'yascroll)
-(global-yascroll-bar-mode)
-
 ;;
 ;; Local customisations
 (setq cust-location "~/.emacs.d/init_local.el")
@@ -612,6 +610,9 @@
 
 (add-hook 'before-save-hook
           'delete-trailing-whitespace)
+
+(add-to-list 'auto-mode-alist '("components\\/.*\\.js\\'" . rjsx-mode))
+(add-to-list 'auto-mode-alist '("screens\\/.*\\.js\\'" . rjsx-mode))
 
 (provide '.emacs)
 ;;; .emacs ends here
