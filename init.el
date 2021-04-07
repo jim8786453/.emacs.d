@@ -7,6 +7,51 @@
     (server-start))
 
 ;;
+;; Custom set variables
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(column-number-mode t)
+ '(custom-safe-themes
+   (quote
+    ("e6df46d5085fde0ad56a46ef69ebb388193080cc9819e2d6024c9c6e27388ba9" default)))
+ '(helm-completion-style (quote emacs))
+ '(inhibit-startup-screen t)
+ '(ispell-dictionary "british")
+ '(ispell-program-name "aspell")
+ '(mouse-avoidance-mode nil nil (avoid))
+ '(mouse-wheel-mode t)
+ '(org-agenda-dim-blocked-tasks nil)
+ '(org-agenda-todo-list-sublevels nil)
+ '(org-clock-clocked-in-display (quote mode-line))
+ '(org-clock-mode-line-total (quote today))
+ '(org-enforce-todo-dependencies t)
+ '(org-log-done (quote time))
+ '(org-startup-indented t)
+ '(package-selected-packages
+   (quote
+    (rjsx-mode slime zenburn-theme exec-path-from-shell git-gutter helm helm-projectile helm-git-grep magit multiple-cursors projectile zenburn-theme)))
+ '(realgud-safe-mode nil)
+ '(tab-width 2)
+ '(tool-bar-mode nil)
+ '(uniquify-buffer-name-style (quote forward) nil (uniquify)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(highlight-indentation-face ((t (:inherit nil))))
+ '(magit-diff-added ((((type tty)) (:foreground "green"))))
+ '(magit-diff-added-highlight ((((type tty)) (:foreground "LimeGreen"))))
+ '(magit-diff-context-highlight ((((type tty)) (:foreground "default"))))
+ '(magit-diff-file-heading ((((type tty)) nil)))
+ '(magit-diff-removed ((((type tty)) (:foreground "red"))))
+ '(magit-diff-removed-highlight ((((type tty)) (:foreground "IndianRed"))))
+ '(magit-section-highlight ((((type tty)) nil))))
+
+;;
 ;; Common lisp is needed all the time so require that here.
 
 (require 'cl)
@@ -17,52 +62,12 @@
 
 (require 'package)
 
-(setq package-archives '(
-                        ("elpa" . "http://tromey.com/elpa/")
-                        ("gnu" . "http://elpa.gnu.org/packages/")
-                        ("marmalade" . "http://marmalade-repo.org/packages/")
-                        ("melpa-stable" . "http://stable.melpa.org/packages/")))
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/") t)
 
 (package-initialize)
-
-;; Guarantee all packages are installed on start
-(defvar packages-list
-  '(avy
-    dash
-    epc
-    exec-path-from-shell
-    git-gutter
-    helm
-    helm-projectile
-    helm-git-grep
-    jedi
-    magit
-    multiple-cursors
-    paredit
-    projectile
-    realgud
-    undo-tree
-    sphinx-doc
-    zenburn-theme
-    ) "List of packages needs to be installed at launch")
-
-(defun has-package-not-installed ()
-  (loop for p in packages-list
-        when (not (package-installed-p p)) do (return t)
-        finally (return nil)))
-
-(when (has-package-not-installed)
-  ;; Check for new packages (package versions)
-  (message "%s" "Get latest versions of all packages...")
-  (package-initialize)
-  (package-refresh-contents)
-  (message "%s" " done.")
-  ;; Install the missing packages
-  (dolist (p packages-list)
-    (when (not (package-installed-p p))
-      (package-install p))))
-
-
+(package-refresh-contents)
+(package-install-selected-packages)
 
 ;;
 ;; Require.
@@ -74,34 +79,6 @@
 
 ;;
 ;; Custom functions
-
-(defun execute-commands (buffer &rest commands)
-  "Execute a list of shell commands sequentially"
-  (with-current-buffer buffer
-    (set (make-local-variable 'commands-list) commands)
-    (start-next-command)))
-
-(defun start-next-command ()
-  "Run the first command in the list"
-  (if (null commands-list)
-      (insert "\nDone.")
-    (let ((command  (car commands-list)))
-      (setq commands-list (cdr commands-list))
-      (insert (format ">>> %s\n" command))
-      (let ((process (start-process-shell-command command (current-buffer) command)))
-        (set-process-sentinel process 'sentinel)))))
-
-(defun sentinel (p e)
-  "After a process exited, call `start-next-command' again"
-  (let ((buffer (process-buffer p)))
-    (when (not (null buffer))
-      (with-current-buffer buffer
-                                        ;(insert (format "Command `%s' %s" p e) )
-        (start-next-command)))))
-
-(defun describe-last-function()
-  (interactive)
-  (describe-function last-command))
 
 (defun dired-back-to-top ()
   (interactive)
@@ -191,9 +168,6 @@
   (revert-buffer t t t)
   (message "%s" "File refreshed."))
 
-(when (display-graphic-p
-       (menu-bar-mode -1)))
-
 ;; Opposite of fill-paragraph.
 (defun unfill-paragraph ()
   "Takes a multi-line paragraph and makes it into a single line of text."
@@ -227,7 +201,6 @@
 (defun open-init-file ()
   (interactive)
   (find-file "~/.emacs.d/init.el"))
-
 
 ;;
 ;; Never understood why Emacs doesn't have this function.
@@ -303,56 +276,6 @@
       (delete-other-windows))))
 
 ;;
-;; Custom set variables
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(column-number-mode t)
- '(custom-safe-themes
-   (quote
-    ("6b2c6e5bc1e89cf7d927d17f436626eac98a04fdab89e080f4e193f6d291c93d" "2a998a3b66a0a6068bcb8b53cd3b519d230dd1527b07232e54c8b9d84061d48d" "04790c9929eacf32d508b84d34e80ad2ee233f13f17767190531b8b350b9ef22" "ec5f761d75345d1cf96d744c50cf7c928959f075acf3f2631742d5c9fe2153ad" "4ea1959cfaa526b795b45e55f77724df4be982b9cd33da8d701df8cdce5b2955" "84890723510d225c45aaff941a7e201606a48b973f0121cb9bcb0b9399be8cba" "190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "f5512c02e0a6887e987a816918b7a684d558716262ac7ee2dd0437ab913eaec6" "40f6a7af0dfad67c0d4df2a1dd86175436d79fc69ea61614d668a635c2cd94ab" "20e359ef1818a838aff271a72f0f689f5551a27704bf1c9469a5c2657b417e6c" "bf648fd77561aae6722f3d53965a9eb29b08658ed045207fe32ffed90433eb52" "53c542b560d232436e14619d058f81434d6bbcdc42e00a4db53d2667d841702e" "146d24de1bb61ddfa64062c29b5ff57065552a7c4019bee5d869e938782dfc2a" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "60f04e478dedc16397353fb9f33f0d895ea3dab4f581307fbf0aa2f07e658a40" default)))
- '(helm-completion-style (quote emacs))
- '(inhibit-startup-screen t)
- '(ispell-dictionary "british")
- '(ispell-program-name "aspell")
- '(mouse-avoidance-mode nil nil (avoid))
- '(mouse-wheel-mode t)
- '(org-agenda-dim-blocked-tasks nil)
- '(org-agenda-todo-list-sublevels nil)
- '(org-clock-clocked-in-display (quote mode-line))
- '(org-clock-mode-line-total (quote today))
- '(org-enforce-todo-dependencies t)
- '(org-log-done (quote time))
- '(org-startup-indented t)
- '(package-selected-packages
-   (quote
-    (swift-mode rainbow-mode helm-git-grep rjsx-mode company omnisharp base16-theme darktooth-theme nord-theme yaml-mode csv-mode markdown-preview-mode csharp-mode js2-mode slime elpy zenburn-theme undo-tree sphinx-doc realgud paredit multiple-cursors magit jedi helm-projectile git-gutter exec-path-from-shell avy)))
- '(realgud-safe-mode nil)
- '(safe-local-variable-values
-   (quote
-    ((projectile-project-compilation-cmd . "SQLALCHEMY_ECHO=1 make run-server")
-     (projectile-project-test-cmd . "py.test -svk unit -n 2"))))
- '(tab-width 2)
- '(tool-bar-mode nil)
- '(uniquify-buffer-name-style (quote forward) nil (uniquify)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(highlight-indentation-face ((t (:inherit nil))))
- '(magit-diff-added ((((type tty)) (:foreground "green"))))
- '(magit-diff-added-highlight ((((type tty)) (:foreground "LimeGreen"))))
- '(magit-diff-context-highlight ((((type tty)) (:foreground "default"))))
- '(magit-diff-file-heading ((((type tty)) nil)))
- '(magit-diff-removed ((((type tty)) (:foreground "red"))))
- '(magit-diff-removed-highlight ((((type tty)) (:foreground "IndianRed"))))
- '(magit-section-highlight ((((type tty)) nil))))
-
-;;
 ;; Backups
 
 (setq backup-directory-alist `(("." . "~/.emacs.d/backup")))
@@ -385,7 +308,89 @@
 (add-hook 'before-save-hook  'force-backup-of-buffer)
 
 ;;
+;; Misc settings
+
+(when (display-graphic-p
+       (menu-bar-mode -1)))
+(if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+(setq scroll-conservatively 10000)
+(setq scroll-step 1)
+(setq auto-window-vscroll nil)
+(blink-cursor-mode 0)
+(setq frame-title-format "%b")
+(setq-default indent-tabs-mode nil)
+(setq c-basic-offset 2)
+(local-set-key (kbd "RET") 'newline-and-indent)
+(setq visible-bell nil)
+(if (fboundp 'fringe-mode)
+    (fringe-mode 4))
+(setq transient-mark-mode nil)
+(setq user-full-name "Jim Kennedy")
+(setq require-final-newline t)
+(put 'upcase-region 'disabled nil)
+(put 'dired-find-alternate-file 'disabled nil)
+(set-default 'truncate-lines t)
+(put 'downcase-region 'disabled nil)
+(setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60
+                        64 68 72 76 80 84 88 92 96 100 104 108 112
+                        116 120))
+(setq-default tab-width 4)
+(setq tab-width 4)
+(setq ediff-split-window-function 'split-window-horizontally)
+(setq uniquify-buffer-name-style 'post-forward-angle-brackets)
+(setq delete-by-moving-to-trash t)
+(setq tramp-default-method "ssh")
+(set-time-zone-rule "GMT-1")
+(fset 'yes-or-no-p 'y-or-n-p)
+(set-face-attribute 'default nil :height 112)
+(set-default-font "Cascadia Code")
+(setenv "GIT_ASKPASS" "git-gui--askpass")
+(global-git-gutter-mode +1)
+(put 'erase-buffer 'disabled nil)
+(setq mouse-wheel-progressive-speed nil)
+(setq split-height-threshold nil)
+(setq split-width-threshold 0)
+(set-time-zone-rule "GMT")
+
+;;
+;; Bindings
+
+(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+(define-key global-map "\C-\M-Q" 'unfill-region)
+(global-set-key (kbd "M-j")
+                (lambda ()
+                  (interactive)
+                  (join-line -1)))
+(global-set-key [remap goto-line] 'goto-line-with-feedback)
+(global-set-key [f1] 'shell)
+(global-set-key [f2] 'helm-git-grep-at-point)
+(global-set-key [f5] 'refresh-file)
+(global-set-key [f7] 'call-last-kbd-macro)
+(global-set-key (kbd "<f12>") 'ispell-word)
+(global-set-key (kbd "C-<f8>") 'flyspell-mode)
+(global-set-key [f8] 'open-init-file)
+(global-set-key (kbd "C-c j") 'avy-goto-word-or-subword-1)
+(global-set-key (kbd "C-c m") 'open-magit-status)
+(global-set-key (kbd "C-c g") 'open-magit-status)
+(global-set-key (kbd "M-<tab>") 'other-window)
+(global-set-key [remap fill-paragraph]
+                #'endless/fill-or-unfill)
+(global-set-key (kbd "C-.") 'find-file-at-point-with-line)
+
+
+;;
+;; Hooks
+
+(add-hook 'before-save-hook
+          'delete-trailing-whitespace)
+
+;;
 ;; Projectile
+
 (projectile-mode +1)
 (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
 (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
@@ -436,77 +441,6 @@
       '((sequence "TODO(t)" "HOLD(h)" "WAIT(w)" "ECHO(e)" "|" "DONE(d)")))
 
 ;;
-;; Settings
-
-(if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
-(setq scroll-conservatively 10000)
-(setq scroll-step 1)
-(setq auto-window-vscroll nil)
-(blink-cursor-mode 0)
-(setq frame-title-format "%b")
-(setq-default indent-tabs-mode nil)
-(setq c-basic-offset 2)
-(local-set-key (kbd "RET") 'newline-and-indent)
-(setq visible-bell nil)
-(if (fboundp 'fringe-mode)
-    (fringe-mode 4))
-(setq transient-mark-mode nil)
-(setq user-full-name "Jim Kennedy")
-(setq require-final-newline t)
-(put 'upcase-region 'disabled nil)
-(put 'dired-find-alternate-file 'disabled nil)
-(set-default 'truncate-lines t)
-(put 'downcase-region 'disabled nil)
-(setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60
-                        64 68 72 76 80 84 88 92 96 100 104 108 112
-                        116 120))
-(setq-default tab-width 4)
-(setq tab-width 4)
-(setq ediff-split-window-function 'split-window-horizontally)
-(setq uniquify-buffer-name-style 'post-forward-angle-brackets)
-(setq delete-by-moving-to-trash t)
-(setq tramp-default-method "ssh")
-(set-time-zone-rule "GMT-1")
-(fset 'yes-or-no-p 'y-or-n-p)
-(set-face-attribute 'default nil :height 112)
-(set-default-font "Cascadia Code")
-(setenv "GIT_ASKPASS" "git-gui--askpass")
-(global-git-gutter-mode +1)
-(put 'erase-buffer 'disabled nil)
-(setq mouse-wheel-progressive-speed nil)
-(setq split-height-threshold nil)
-(setq split-width-threshold 0)
-
-;;
-;; Bindings
-
-(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-(global-set-key (kbd "C->") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
-(define-key global-map "\C-\M-Q" 'unfill-region)
-(global-set-key (kbd "M-j")
-                (lambda ()
-                  (interactive)
-                  (join-line -1)))
-(global-set-key [remap goto-line] 'goto-line-with-feedback)
-(global-set-key [f1] 'shell)
-(global-set-key [f2] 'helm-git-grep-at-point)
-(global-set-key [f5] 'refresh-file)
-(global-set-key [f7] 'call-last-kbd-macro)
-(global-set-key (kbd "<f12>") 'ispell-word)
-(global-set-key (kbd "C-<f8>") 'flyspell-mode)
-(global-set-key [f8] 'open-init-file)
-(global-set-key (kbd "C-c j") 'avy-goto-word-or-subword-1)
-(global-set-key (kbd "C-c m") 'open-magit-status)
-(global-set-key (kbd "C-c g") 'open-magit-status)
-(global-set-key (kbd "M-<tab>") 'other-window)
-(global-set-key [remap fill-paragraph]
-                #'endless/fill-or-unfill)
-(global-set-key (kbd "C-.") 'find-file-at-point-with-line)
-
-;;
 ;; Slime
 
 (setq quicklisp-location "~/quicklisp/slime-helper.el")
@@ -521,22 +455,6 @@
   (exec-path-from-shell-initialize)
   (set-M-3-to-hash))
 
-;;
-;; X11
-(when (memq window-system '(x))
-  (setq x-alt-keysym 'meta)
-  (setq normal-erase-is-backspace t)
-  (set-M-3-to-hash))
-
-;; Realgud
-(load-library "realgud")
-
-;; Do this last so we have a visual clue initialisation is finished.
-(load-theme 'zenburn)
-
-
-
-
 ;; Python
 (defun insert-py-debug ()
   (interactive)
@@ -548,71 +466,37 @@
 
 ;; Javascript
 (setq js-indent-level 2)
+(add-to-list 'auto-mode-alist '("components\\/.*\\.js\\'" . rjsx-mode))
+(add-to-list 'auto-mode-alist '("screens\\/.*\\.js\\'" . rjsx-mode))
 
 ;; Whitespace
 (add-hook 'before-save-hook
           'delete-trailing-whitespace)
 
+;;
 ;; Magit
+
 (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
 (add-hook 'git-commit-setup-hook 'git-commit-turn-on-flyspell)
-
 (defun disable-magit-highlight-in-buffer ()
   (face-remap-add-relative 'magit-item-highlight '()))
-
 (add-hook 'magit-status-mode-hook 'disable-magit-highlight-in-buffer)
 
-;; Omnisharp
-(eval-after-load
-  'company
-  '(add-to-list 'company-backends #'company-omnisharp))
-
-(defun my-csharp-mode-setup ()
-  (omnisharp-mode)
-  (company-mode)
-  (flycheck-mode)
-
-  (setq indent-tabs-mode nil)
-  (setq c-syntactic-indentation t)
-  (c-set-style "ellemtel")
-  (setq c-basic-offset 4)
-  (setq truncate-lines t)
-  (setq tab-width 4)
-  (setq evil-shift-width 4)
-
-  ;csharp-mode README.md recommends this too
-  ;(electric-pair-mode 1)       ;; Emacs 24
-  ;(electric-pair-local-mode 1) ;; Emacs 25
-
-  (local-set-key (kbd "C-c r r") 'omnisharp-run-code-action-refactoring)
-  (local-set-key (kbd "C-c C-c") 'recompile))
-
-(add-hook 'csharp-mode-hook 'my-csharp-mode-setup t)
-
+;;
 ;; Css
+
 (setq css-indent-offset 2)
-
-;; (require 'mouse)
-;; (xterm-mouse-mode t)
-;; (mouse-wheel-mode t)
-
-;; (global-set-key (kbd "<wheel-up>") '(lambda () (interactive) (scroll-up 1)))
-;; (global-set-key (kbd "<wheel-down>") '(lambda () (interactive) (scroll-down 1)))
-;; (define-key key-translation-map "\033[M'X1-" (kbd "<wheel-up>"))
 
 ;;
 ;; Local customisations
+
 (setq cust-location "~/.emacs.d/init_local.el")
 (when (file-exists-p cust-location)
   (load cust-location))
 
-(set-time-zone-rule "GMT")
 
-(add-hook 'before-save-hook
-          'delete-trailing-whitespace)
-
-(add-to-list 'auto-mode-alist '("components\\/.*\\.js\\'" . rjsx-mode))
-(add-to-list 'auto-mode-alist '("screens\\/.*\\.js\\'" . rjsx-mode))
+;; Do this last so we have a visual clue initialisation is finished.
+(load-theme 'zenburn)
 
 (provide '.emacs)
 ;;; .emacs ends here
