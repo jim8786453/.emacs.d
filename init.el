@@ -15,9 +15,8 @@
  ;; If there is more than one, they won't work right.
  '(column-number-mode t)
  '(custom-safe-themes
-   (quote
-    ("e6df46d5085fde0ad56a46ef69ebb388193080cc9819e2d6024c9c6e27388ba9" default)))
- '(helm-completion-style (quote emacs))
+   '("e6df46d5085fde0ad56a46ef69ebb388193080cc9819e2d6024c9c6e27388ba9" default))
+ '(helm-completion-style 'emacs)
  '(inhibit-startup-screen t)
  '(ispell-dictionary "british")
  '(ispell-program-name "aspell")
@@ -25,18 +24,17 @@
  '(mouse-wheel-mode t)
  '(org-agenda-dim-blocked-tasks nil)
  '(org-agenda-todo-list-sublevels nil)
- '(org-clock-clocked-in-display (quote mode-line))
- '(org-clock-mode-line-total (quote today))
+ '(org-clock-clocked-in-display 'mode-line)
+ '(org-clock-mode-line-total 'today)
  '(org-enforce-todo-dependencies t)
- '(org-log-done (quote time))
+ '(org-log-done 'time)
  '(org-startup-indented t)
  '(package-selected-packages
-   (quote
-    (rjsx-mode slime zenburn-theme exec-path-from-shell git-gutter helm helm-projectile helm-git-grep magit multiple-cursors projectile zenburn-theme)))
+   '(rjsx-mode slime zenburn-theme exec-path-from-shell git-gutter helm helm-projectile helm-git-grep magit multiple-cursors projectile zenburn-theme))
  '(realgud-safe-mode nil)
  '(tab-width 2)
  '(tool-bar-mode nil)
- '(uniquify-buffer-name-style (quote forward) nil (uniquify)))
+ '(uniquify-buffer-name-style 'forward nil (uniquify)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -366,7 +364,7 @@
                   (interactive)
                   (join-line -1)))
 (global-set-key [remap goto-line] 'goto-line-with-feedback)
-(global-set-key [f1] 'shell)
+(global-set-key [f1] 'ansi-term)
 (global-set-key [f2] 'helm-git-grep-at-point)
 (global-set-key [f5] 'refresh-file)
 (global-set-key [f7] 'call-last-kbd-macro)
@@ -497,6 +495,8 @@
 
 ;; Do this last so we have a visual clue initialisation is finished.
 (load-theme 'zenburn)
+
+(setq mac-command-modifier 'control)
 
 (provide '.emacs)
 ;;; .emacs ends here
