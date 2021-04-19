@@ -50,12 +50,6 @@
  '(magit-section-highlight ((((type tty)) nil))))
 
 ;;
-;; Common lisp is needed all the time so require that here.
-
-(require 'cl)
-(require 'format-spec)
-
-;;
 ;; Packages
 
 (require 'package)
