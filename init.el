@@ -379,6 +379,10 @@
 (add-hook 'before-save-hook
           'delete-trailing-whitespace)
 
+;; Sounds
+(setq visible-bell t)
+(setq ring-bell-function 'ignore)
+
 ;;
 ;; Projectile
 
