@@ -1,11 +1,3 @@
-
-;;
-;; Restart emacs server.
-
-(require 'server)
-(or (server-running-p)
-    (server-start))
-
 ;;
 ;; Custom set variables
 (custom-set-variables
@@ -15,8 +7,9 @@
  ;; If there is more than one, they won't work right.
  '(column-number-mode t)
  '(custom-safe-themes
-   '("e6df46d5085fde0ad56a46ef69ebb388193080cc9819e2d6024c9c6e27388ba9" default))
- '(helm-completion-style 'emacs)
+   (quote
+    ("3b8284e207ff93dfc5e5ada8b7b00a3305351a3fb222782d8033a400a48eca48" "e6df46d5085fde0ad56a46ef69ebb388193080cc9819e2d6024c9c6e27388ba9" default)))
+ '(helm-completion-style (quote emacs))
  '(inhibit-startup-screen t)
  '(ispell-dictionary "british")
  '(ispell-program-name "aspell")
@@ -24,30 +17,18 @@
  '(mouse-wheel-mode t)
  '(org-agenda-dim-blocked-tasks nil)
  '(org-agenda-todo-list-sublevels nil)
- '(org-clock-clocked-in-display 'mode-line)
- '(org-clock-mode-line-total 'today)
+ '(org-clock-clocked-in-display (quote mode-line))
+ '(org-clock-mode-line-total (quote today))
  '(org-enforce-todo-dependencies t)
- '(org-log-done 'time)
+ '(org-log-done (quote time))
  '(org-startup-indented t)
  '(package-selected-packages
-   '(rjsx-mode slime zenburn-theme exec-path-from-shell git-gutter helm helm-projectile helm-git-grep magit multiple-cursors projectile zenburn-theme))
+   (quote
+    (markdown-mode rjsx-mode slime zenburn-theme exec-path-from-shell git-gutter helm helm-projectile helm-git-grep magit multiple-cursors projectile zenburn-theme)))
  '(realgud-safe-mode nil)
  '(tab-width 2)
  '(tool-bar-mode nil)
- '(uniquify-buffer-name-style 'forward nil (uniquify)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(highlight-indentation-face ((t (:inherit nil))))
- '(magit-diff-added ((((type tty)) (:foreground "green"))))
- '(magit-diff-added-highlight ((((type tty)) (:foreground "LimeGreen"))))
- '(magit-diff-context-highlight ((((type tty)) (:foreground "default"))))
- '(magit-diff-file-heading ((((type tty)) nil)))
- '(magit-diff-removed ((((type tty)) (:foreground "red"))))
- '(magit-diff-removed-highlight ((((type tty)) (:foreground "IndianRed"))))
- '(magit-section-highlight ((((type tty)) nil))))
+ '(uniquify-buffer-name-style (quote forward) nil (uniquify)))
 
 ;;
 ;; Packages
@@ -343,6 +324,15 @@
 (setq split-height-threshold nil)
 (setq split-width-threshold 0)
 (set-time-zone-rule "GMT")
+(setq show-paren-delay 0)
+(show-paren-mode)
+(setq mac-command-modifier 'control)
+(unless (display-graphic-p)
+  ;; activate mouse-based scrolling
+  (xterm-mouse-mode 1)
+  (global-set-key (kbd "<mouse-4>") 'scroll-down-line)
+  (global-set-key (kbd "<mouse-5>") 'scroll-up-line)
+  )
 
 ;;
 ;; Bindings
@@ -489,11 +479,24 @@
 (when (file-exists-p cust-location)
   (load cust-location))
 
+;;
+;; Restart emacs server.
+
+(require 'server)
+(or (server-running-p)
+    (server-start))
+
 
 ;; Do this last so we have a visual clue initialisation is finished.
-(load-theme 'zenburn)
-
-(setq mac-command-modifier 'control)
+;; (load-theme 'zenburn)
+(load-theme 'wombat)
+(set-face-background 'default "#111")
+(set-face-background 'cursor "#c96")
+(set-face-background 'isearch "#c60")
+(set-face-foreground 'isearch "#eee")
+(set-face-background 'lazy-highlight "#960")
+(set-face-foreground 'lazy-highlight "#ccc")
+(set-face-foreground 'font-lock-comment-face "#fc0")
 
 (provide '.emacs)
 ;;; .emacs ends here
