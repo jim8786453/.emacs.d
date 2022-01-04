@@ -497,6 +497,7 @@
 (set-face-background 'lazy-highlight "#960")
 (set-face-foreground 'lazy-highlight "#ccc")
 (set-face-foreground 'font-lock-comment-face "#fc0")
+(set-mouse-color "white")
 
 (provide '.emacs)
 ;;; .emacs ends here
