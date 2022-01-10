@@ -479,14 +479,6 @@
 (when (file-exists-p cust-location)
   (load cust-location))
 
-;;
-;; Restart emacs server.
-
-(require 'server)
-(or (server-running-p)
-    (server-start))
-
-
 ;; Do this last so we have a visual clue initialisation is finished.
 ;; (load-theme 'zenburn)
 (load-theme 'wombat)
@@ -498,6 +490,13 @@
 (set-face-foreground 'lazy-highlight "#ccc")
 (set-face-foreground 'font-lock-comment-face "#fc0")
 (set-mouse-color "white")
+
+;;
+;; Restart emacs server.
+
+(require 'server)
+(or (server-running-p)
+    (server-start))
 
 (provide '.emacs)
 ;;; .emacs ends here
