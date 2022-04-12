@@ -21,14 +21,21 @@
  '(org-clock-mode-line-total (quote today))
  '(org-enforce-todo-dependencies t)
  '(org-log-done (quote time))
- '(org-startup-indented t)
+ '(org-startup-indented nil)
  '(package-selected-packages
    (quote
-    (markdown-mode rjsx-mode slime zenburn-theme exec-path-from-shell git-gutter helm helm-projectile helm-git-grep magit multiple-cursors projectile zenburn-theme)))
+    (visual-fill-column markdown-mode rjsx-mode slime zenburn-theme exec-path-from-shell git-gutter helm helm-projectile helm-git-grep magit multiple-cursors projectile zenburn-theme)))
  '(realgud-safe-mode nil)
  '(tab-width 2)
  '(tool-bar-mode nil)
  '(uniquify-buffer-name-style (quote forward) nil (uniquify)))
+
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
 
 ;;
 ;; Packages
@@ -481,15 +488,51 @@
 
 ;; Do this last so we have a visual clue initialisation is finished.
 ;; (load-theme 'zenburn)
-(load-theme 'wombat)
-(set-face-background 'default "#111")
-(set-face-background 'cursor "#c96")
-(set-face-background 'isearch "#c60")
-(set-face-foreground 'isearch "#eee")
-(set-face-background 'lazy-highlight "#960")
-(set-face-foreground 'lazy-highlight "#ccc")
-(set-face-foreground 'font-lock-comment-face "#fc0")
-(set-mouse-color "white")
+
+(defun set-theme ()
+  (interactive)
+  (load-theme 'wombat)
+  (set-face-background 'default "#111")
+  (set-face-background 'cursor "#c96")
+  (set-face-background 'isearch "#c60")
+  (set-face-foreground 'isearch "#eee")
+  (set-face-background 'lazy-highlight "#960")
+  (set-face-foreground 'lazy-highlight "#ccc")
+  (set-face-foreground 'font-lock-comment-face "#fc0")
+  (set-mouse-color "white"))
+
+(set-theme)
+
+;;
+;; Wsl
+
+; wsl-copy
+(defun wsl-copy (start end)
+  (interactive "r")
+  (shell-command-on-region start end "clip.exe")
+  (deactivate-mark))
+
+; wsl-paste
+(defun wsl-paste ()
+  (interactive)
+  (let ((clipboard
+     (shell-command-to-string "powershell.exe -command 'Get-Clipboard' 2> /dev/null")))
+    (setq clipboard (replace-regexp-in-string "\r" "" clipboard)) ; Remove Windows ^M characters
+    (setq clipboard (substring clipboard 0 -1)) ; Remove newline added by Powershell
+    (insert clipboard)))
+
+
+; Bind wsl-copy to C-c C-v
+(global-set-key
+ (kbd "C-c C-c")
+ 'wsl-copy)
+
+; Bind wsl-paste to C-c C-v
+(global-set-key
+ (kbd "C-c C-v")
+ 'wsl-paste)
+
+
 
 ;;
 ;; Restart emacs server.
