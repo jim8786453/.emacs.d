@@ -24,7 +24,7 @@
  '(org-startup-indented nil)
  '(package-selected-packages
    (quote
-    (visual-fill-column markdown-mode rjsx-mode slime zenburn-theme exec-path-from-shell git-gutter helm helm-projectile helm-git-grep magit multiple-cursors projectile zenburn-theme)))
+    (company helm-lsp csharp-mode lsp-ui lsp-mode visual-fill-column markdown-mode rjsx-mode slime zenburn-theme exec-path-from-shell git-gutter helm helm-projectile helm-git-grep magit multiple-cursors projectile zenburn-theme)))
  '(realgud-safe-mode nil)
  '(tab-width 2)
  '(tool-bar-mode nil)
@@ -531,8 +531,6 @@
 (global-set-key
  (kbd "C-c C-v")
  'wsl-paste)
-
-
 
 ;;
 ;; Restart emacs server.
