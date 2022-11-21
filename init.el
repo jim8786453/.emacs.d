@@ -7,9 +7,8 @@
  ;; If there is more than one, they won't work right.
  '(column-number-mode t)
  '(custom-safe-themes
-   (quote
-    ("3b8284e207ff93dfc5e5ada8b7b00a3305351a3fb222782d8033a400a48eca48" "e6df46d5085fde0ad56a46ef69ebb388193080cc9819e2d6024c9c6e27388ba9" default)))
- '(helm-completion-style (quote emacs))
+   '("ba9c91bc43996f2fa710e4b5145d9de231150103e142acdcf24adcaaf0db7a17" "3b8284e207ff93dfc5e5ada8b7b00a3305351a3fb222782d8033a400a48eca48" "e6df46d5085fde0ad56a46ef69ebb388193080cc9819e2d6024c9c6e27388ba9" default))
+ '(helm-completion-style 'emacs)
  '(inhibit-startup-screen t)
  '(ispell-dictionary "british")
  '(ispell-program-name "aspell")
@@ -17,18 +16,17 @@
  '(mouse-wheel-mode t)
  '(org-agenda-dim-blocked-tasks nil)
  '(org-agenda-todo-list-sublevels nil)
- '(org-clock-clocked-in-display (quote mode-line))
- '(org-clock-mode-line-total (quote today))
+ '(org-clock-clocked-in-display 'mode-line)
+ '(org-clock-mode-line-total 'today)
  '(org-enforce-todo-dependencies t)
- '(org-log-done (quote time))
+ '(org-log-done 'time)
  '(org-startup-indented nil)
  '(package-selected-packages
-   (quote
-    (company helm-lsp csharp-mode lsp-ui lsp-mode visual-fill-column markdown-mode rjsx-mode slime zenburn-theme exec-path-from-shell git-gutter helm helm-projectile helm-git-grep magit multiple-cursors projectile zenburn-theme)))
+   '(solo-jazz-theme omnisharp treemacs powershell swift-mode eglot company helm-lsp csharp-mode lsp-ui lsp-mode visual-fill-column markdown-mode rjsx-mode slime zenburn-theme exec-path-from-shell git-gutter helm helm-projectile helm-git-grep magit multiple-cursors projectile zenburn-theme))
  '(realgud-safe-mode nil)
  '(tab-width 2)
  '(tool-bar-mode nil)
- '(uniquify-buffer-name-style (quote forward) nil (uniquify)))
+ '(uniquify-buffer-name-style 'forward nil (uniquify)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -255,6 +253,45 @@
       (set-frame-size (selected-frame) 105 53)
       (delete-other-windows))))
 
+(defun reverse-paragraphs (beg end)
+  "Reverse the order of paragraphs in a region.
+From a program takes two point or marker arguments, BEG and END."
+  (interactive "r")
+  (when (> beg end)
+    (let (mid) (setq mid end end beg beg mid)))
+  (save-excursion
+    ;; the last paragraph might be missing a trailing newline
+    (goto-char end)
+    (setq end (point-marker))
+    ;; the real work.
+    (goto-char beg)
+    (let (paragraphs fix-newline)
+      (while (< beg end)
+	;; skip to the beginning of the next paragraph instead of
+	;; remaining on the position separating the two paragraphs
+	(when (= 0 (forward-paragraph 1))
+	  (goto-char (1+ (match-end 0))))
+	(when (> (point) end)
+	  (goto-char end))
+	(setq paragraphs (cons (buffer-substring beg (point))
+			       paragraphs))
+	(delete-region beg (point)))
+      ;; if all but the last paragraph end with two newlines, add a
+      ;; newline to the last paragraph
+      (when (and (null (delete 2 (mapcar (lambda (s)
+					   (when (string-match "\n+$" s -2)
+					     (length (match-string 0 s))))
+					 (cdr paragraphs))))
+		 (when (string-match "\n+$" (car paragraphs) -2)
+		   (= 1 (length (match-string 0 (car paragraphs))))))
+	(setq fix-newline t)
+	(setcar paragraphs (concat (car paragraphs) "\n")))
+      ;; insert paragraphs
+      (dolist (par paragraphs)
+	(insert par))
+      (when fix-newline
+	(delete-char -1)))))
+
 ;;
 ;; Backups
 
@@ -323,7 +360,8 @@
 (setq tramp-default-method "ssh")
 (set-time-zone-rule "GMT-1")
 (fset 'yes-or-no-p 'y-or-n-p)
-(set-face-attribute 'default nil :family "Cascadia Code" :height 112)
+
+(set-face-attribute 'default nil :family "Cascadia Code" :height 110)
 (setenv "GIT_ASKPASS" "git-gui--askpass")
 (global-git-gutter-mode +1)
 (put 'erase-buffer 'disabled nil)
@@ -340,6 +378,7 @@
   (global-set-key (kbd "<mouse-4>") 'scroll-down-line)
   (global-set-key (kbd "<mouse-5>") 'scroll-up-line)
   )
+(setq ispell-dictionary "british")
 
 ;;
 ;; Bindings
@@ -368,8 +407,7 @@
 (global-set-key [remap fill-paragraph]
                 #'endless/fill-or-unfill)
 (global-set-key (kbd "C-.") 'find-file-at-point-with-line)
-
-
+(global-set-key (kbd "<Scroll_Lock>") 'ignore)
 ;;
 ;; Hooks
 
@@ -491,15 +529,15 @@
 
 (defun set-theme ()
   (interactive)
-  (load-theme 'wombat)
-  (set-face-background 'default "#111")
-  (set-face-background 'cursor "#c96")
-  (set-face-background 'isearch "#c60")
-  (set-face-foreground 'isearch "#eee")
-  (set-face-background 'lazy-highlight "#960")
-  (set-face-foreground 'lazy-highlight "#ccc")
-  (set-face-foreground 'font-lock-comment-face "#fc0")
-  (set-mouse-color "white"))
+  (load-theme 'solo-jazz))
+  ;; (set-face-background 'default "#111")
+  ;; (set-face-background 'cursor "#c96")
+  ;; (set-face-background 'isearch "#c60")
+  ;; (set-face-foreground 'isearch "#eee")
+  ;; (set-face-background 'lazy-highlight "#960")
+  ;; (set-face-foreground 'lazy-highlight "#ccc")
+  ;; (set-face-foreground 'font-lock-comment-face "#fc0")
+  ;; (set-mouse-color "white"))
 
 (set-theme)
 
@@ -522,7 +560,7 @@
     (insert clipboard)))
 
 
-; Bind wsl-copy to C-c C-v
+; Bind wsl-copy to C-c C-c
 (global-set-key
  (kbd "C-c C-c")
  'wsl-copy)
@@ -531,6 +569,12 @@
 (global-set-key
  (kbd "C-c C-v")
  'wsl-paste)
+
+(global-set-key
+ (kbd "C-c C-d")
+ 'redraw-display)
+
+(setq create-lockfiles nil)
 
 ;;
 ;; Restart emacs server.
