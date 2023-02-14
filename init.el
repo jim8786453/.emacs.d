@@ -51,7 +51,6 @@
 ;; Require.
 
 (require 'helm)
-(require 'helm-config)
 (require 'ispell)
 (require 'helm-projectile)
 
@@ -361,7 +360,7 @@ From a program takes two point or marker arguments, BEG and END."
 (set-time-zone-rule "GMT-1")
 (fset 'yes-or-no-p 'y-or-n-p)
 
-(set-face-attribute 'default nil :family "Cascadia Code" :height 110)
+(set-face-attribute 'default nil :family "Cascadia Code" :height 140)
 (setenv "GIT_ASKPASS" "git-gui--askpass")
 (global-git-gutter-mode +1)
 (put 'erase-buffer 'disabled nil)
@@ -562,12 +561,12 @@ From a program takes two point or marker arguments, BEG and END."
 
 ; Bind wsl-copy to C-c C-c
 (global-set-key
- (kbd "C-c C-c")
+ (kbd "C-c M-w")
  'wsl-copy)
 
 ; Bind wsl-paste to C-c C-v
 (global-set-key
- (kbd "C-c C-v")
+ (kbd "C-c C-y")
  'wsl-paste)
 
 (global-set-key
@@ -575,6 +574,29 @@ From a program takes two point or marker arguments, BEG and END."
  'redraw-display)
 
 (setq create-lockfiles nil)
+
+(with-eval-after-load "org"
+  (define-key org-mode-map (kbd "C-c M-w") #'wsl-copy))
+
+(with-eval-after-load "org"
+  (define-key org-mode-map (kbd "C-c C-y") #'wsl-paste))
+
+(with-eval-after-load "org"
+  (define-key org-mode-map (kbd "C-c C-d") #'redraw-display))
+
+(defun my-kill-ring-save (beg end &optional region)
+  (interactive (list (mark) (point) 'region))
+  (copy-region-as-kill beg end region)
+  ;; This use of called-interactively-p is correct because the code it
+  ;; controls just gives the user visual feedback.
+  (if (called-interactively-p 'interactive)
+      (progn
+        (indicate-copied-region)
+        (wsl-copy beg end))))
+
+(global-set-key
+ (kbd "M-w")
+ 'my-kill-ring-save)
 
 ;;
 ;; Restart emacs server.
