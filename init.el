@@ -7,7 +7,7 @@
  ;; If there is more than one, they won't work right.
  '(column-number-mode t)
  '(custom-safe-themes
-   '("ba9c91bc43996f2fa710e4b5145d9de231150103e142acdcf24adcaaf0db7a17" "3b8284e207ff93dfc5e5ada8b7b00a3305351a3fb222782d8033a400a48eca48" "e6df46d5085fde0ad56a46ef69ebb388193080cc9819e2d6024c9c6e27388ba9" default))
+   '("2dc03dfb67fbcb7d9c487522c29b7582da20766c9998aaad5e5b63b5c27eec3f" "ba9c91bc43996f2fa710e4b5145d9de231150103e142acdcf24adcaaf0db7a17" "3b8284e207ff93dfc5e5ada8b7b00a3305351a3fb222782d8033a400a48eca48" "e6df46d5085fde0ad56a46ef69ebb388193080cc9819e2d6024c9c6e27388ba9" default))
  '(helm-completion-style 'emacs)
  '(inhibit-startup-screen t)
  '(ispell-dictionary "british")
@@ -524,11 +524,11 @@ From a program takes two point or marker arguments, BEG and END."
   (load cust-location))
 
 ;; Do this last so we have a visual clue initialisation is finished.
-;; (load-theme 'zenburn)
+(load-theme 'zenburn)
 
-(defun set-theme ()
-  (interactive)
-  (load-theme 'solo-jazz))
+;;(defun set-theme ()
+;;  (interactive))
+  ;; (load-theme 'solo-jazz))
   ;; (set-face-background 'default "#111")
   ;; (set-face-background 'cursor "#c96")
   ;; (set-face-background 'isearch "#c60")
@@ -538,7 +538,7 @@ From a program takes two point or marker arguments, BEG and END."
   ;; (set-face-foreground 'font-lock-comment-face "#fc0")
   ;; (set-mouse-color "white"))
 
-(set-theme)
+;;(set-theme)
 
 ;;
 ;; Wsl
@@ -598,12 +598,16 @@ From a program takes two point or marker arguments, BEG and END."
  (kbd "M-w")
  'my-kill-ring-save)
 
+(add-hook 'org-mode-hook 'writeroom-mode)
+
 ;;
 ;; Restart emacs server.
 
 (require 'server)
 (or (server-running-p)
     (server-start))
+
+(read-string "Loaded .emacs press enter to continue...")
 
 (provide '.emacs)
 ;;; .emacs ends here
