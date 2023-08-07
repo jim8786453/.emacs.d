@@ -599,6 +599,7 @@ From a program takes two point or marker arguments, BEG and END."
  'my-kill-ring-save)
 
 (add-hook 'org-mode-hook 'writeroom-mode)
+(set-time-zone-rule "Europe/London")
 
 ;;
 ;; Restart emacs server.
