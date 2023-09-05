@@ -7,7 +7,7 @@
  ;; If there is more than one, they won't work right.
  '(column-number-mode t)
  '(custom-safe-themes
-   '("2dc03dfb67fbcb7d9c487522c29b7582da20766c9998aaad5e5b63b5c27eec3f" "ba9c91bc43996f2fa710e4b5145d9de231150103e142acdcf24adcaaf0db7a17" "3b8284e207ff93dfc5e5ada8b7b00a3305351a3fb222782d8033a400a48eca48" "e6df46d5085fde0ad56a46ef69ebb388193080cc9819e2d6024c9c6e27388ba9" default))
+   '("f366d4bc6d14dcac2963d45df51956b2409a15b770ec2f6d730e73ce0ca5c8a7" "2dc03dfb67fbcb7d9c487522c29b7582da20766c9998aaad5e5b63b5c27eec3f" "ba9c91bc43996f2fa710e4b5145d9de231150103e142acdcf24adcaaf0db7a17" "3b8284e207ff93dfc5e5ada8b7b00a3305351a3fb222782d8033a400a48eca48" "e6df46d5085fde0ad56a46ef69ebb388193080cc9819e2d6024c9c6e27388ba9" default))
  '(helm-completion-style 'emacs)
  '(inhibit-startup-screen t)
  '(ispell-dictionary "british")
@@ -22,7 +22,7 @@
  '(org-log-done 'time)
  '(org-startup-indented nil)
  '(package-selected-packages
-   '(solo-jazz-theme omnisharp treemacs powershell swift-mode eglot company helm-lsp csharp-mode lsp-ui lsp-mode visual-fill-column markdown-mode rjsx-mode slime zenburn-theme exec-path-from-shell git-gutter helm helm-projectile helm-git-grep magit multiple-cursors projectile zenburn-theme))
+   '(writeroom-mode org-view-mode visual-fill-column markdown-mode slime exec-path-from-shell git-gutter helm helm-projectile helm-git-grep magit projectile zenburn-theme))
  '(realgud-safe-mode nil)
  '(tab-width 2)
  '(tool-bar-mode nil)
@@ -41,7 +41,7 @@
 (require 'package)
 
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/") t)
+;;(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/") t)
 
 (package-initialize)
 (package-refresh-contents)
@@ -502,6 +502,17 @@ From a program takes two point or marker arguments, BEG and END."
 (add-hook 'before-save-hook
           'delete-trailing-whitespace)
 
+;; save the buffer, removing and readding the 'delete-trailing-whitespace function
+;; to 'before-save-hook if it's there
+(defun save-buffer-no-delete-trailing-whitespace ()
+  (interactive)
+  (let ((normally-should-delete-trailing-whitespace (memq 'delete-trailing-whitespace before-save-hook)))
+    (when normally-should-delete-trailing-whitespace
+      (remove-hook 'before-save-hook 'delete-trailing-whitespace))
+    (save-buffer)
+    (when normally-should-delete-trailing-whitespace
+      (add-hook 'before-save-hook 'delete-trailing-whitespace))))
+
 ;;
 ;; Magit
 
@@ -600,6 +611,8 @@ From a program takes two point or marker arguments, BEG and END."
 
 (add-hook 'org-mode-hook 'writeroom-mode)
 (set-time-zone-rule "Europe/London")
+
+(setq native-comp-async-report-warnings-errors 'silent)
 
 ;;
 ;; Restart emacs server.
