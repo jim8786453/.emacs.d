@@ -22,18 +22,11 @@
  '(org-log-done 'time)
  '(org-startup-indented nil)
  '(package-selected-packages
-   '(writeroom-mode org-view-mode visual-fill-column markdown-mode slime exec-path-from-shell git-gutter helm helm-projectile helm-git-grep magit projectile zenburn-theme))
+   '(rjsx-mode js2-mode eglot lsp-mode beacon writeroom-mode org-view-mode visual-fill-column markdown-mode slime exec-path-from-shell git-gutter helm helm-projectile helm-git-grep magit projectile zenburn-theme))
  '(realgud-safe-mode nil)
  '(tab-width 2)
  '(tool-bar-mode nil)
  '(uniquify-buffer-name-style 'forward nil (uniquify)))
-
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
 
 ;;
 ;; Packages
@@ -625,3 +618,9 @@ From a program takes two point or marker arguments, BEG and END."
 
 (provide '.emacs)
 ;;; .emacs ends here
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
