@@ -1,3 +1,6 @@
+(use-package magit
+  :ensure t)
+
 ;;
 ;; Custom set variables
 (custom-set-variables
@@ -7,10 +10,16 @@
  ;; If there is more than one, they won't work right.
  '(column-number-mode t)
  '(custom-safe-themes
-   '("f366d4bc6d14dcac2963d45df51956b2409a15b770ec2f6d730e73ce0ca5c8a7" "2dc03dfb67fbcb7d9c487522c29b7582da20766c9998aaad5e5b63b5c27eec3f" "ba9c91bc43996f2fa710e4b5145d9de231150103e142acdcf24adcaaf0db7a17" "3b8284e207ff93dfc5e5ada8b7b00a3305351a3fb222782d8033a400a48eca48" "e6df46d5085fde0ad56a46ef69ebb388193080cc9819e2d6024c9c6e27388ba9" default))
- '(helm-completion-style 'emacs)
+   '("09b833239444ac3230f591e35e3c28a4d78f1556b107bafe0eb32b5977204d93"
+     "18cf5d20a45ea1dff2e2ffd6fbcd15082f9aa9705011a3929e77129a971d1cb3"
+     "f366d4bc6d14dcac2963d45df51956b2409a15b770ec2f6d730e73ce0ca5c8a7"
+     "2dc03dfb67fbcb7d9c487522c29b7582da20766c9998aaad5e5b63b5c27eec3f"
+     "ba9c91bc43996f2fa710e4b5145d9de231150103e142acdcf24adcaaf0db7a17"
+     "3b8284e207ff93dfc5e5ada8b7b00a3305351a3fb222782d8033a400a48eca48"
+     "e6df46d5085fde0ad56a46ef69ebb388193080cc9819e2d6024c9c6e27388ba9"
+     default))
  '(inhibit-startup-screen t)
- '(ispell-dictionary "british")
+ '(ispell-dictionary "british" t)
  '(ispell-program-name "aspell")
  '(mouse-avoidance-mode nil nil (avoid))
  '(mouse-wheel-mode t)
@@ -21,31 +30,17 @@
  '(org-enforce-todo-dependencies t)
  '(org-log-done 'time)
  '(org-startup-indented nil)
- '(package-selected-packages
-   '(rjsx-mode js2-mode eglot lsp-mode beacon writeroom-mode org-view-mode visual-fill-column markdown-mode slime exec-path-from-shell git-gutter helm helm-projectile helm-git-grep magit projectile zenburn-theme))
+ '(package-selected-packages '(eat magit slime))
  '(realgud-safe-mode nil)
  '(tab-width 2)
- '(tool-bar-mode nil)
- '(uniquify-buffer-name-style 'forward nil (uniquify)))
+ '(tool-bar-mode nil))
 
-;;
-;; Packages
-
-(require 'package)
-
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-;;(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/") t)
-
-(package-initialize)
-(package-refresh-contents)
-(package-install-selected-packages)
-
-;;
-;; Require.
-
-(require 'helm)
-(require 'ispell)
-(require 'helm-projectile)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
 
 ;;
 ;; Custom functions
@@ -200,10 +195,6 @@
 	(message "Buffer '%s' is not visiting a file!" name)
  (progn 	(copy-file filename newname 1) 	(delete-file filename) 	(set-visited-file-name newname) 	(set-buffer-modified-p nil) 	t))))
 
-
-(defun set-M-3-to-hash ()
-  (global-set-key (kbd "M-3") '(lambda () (interactive) (insert "#"))))
-
 (defun open-magit-status ()
   (interactive)
   (magit-status))
@@ -353,9 +344,9 @@ From a program takes two point or marker arguments, BEG and END."
 (set-time-zone-rule "GMT-1")
 (fset 'yes-or-no-p 'y-or-n-p)
 
-(set-face-attribute 'default nil :family "Cascadia Code" :height 140)
+(set-face-attribute 'default nil :family "Cascadia Code" :height 120)
 (setenv "GIT_ASKPASS" "git-gui--askpass")
-(global-git-gutter-mode +1)
+;;(global-git-gutter-mode +1)
 (put 'erase-buffer 'disabled nil)
 (setq mouse-wheel-progressive-speed nil)
 (setq split-height-threshold nil)
@@ -371,6 +362,10 @@ From a program takes two point or marker arguments, BEG and END."
   (global-set-key (kbd "<mouse-5>") 'scroll-up-line)
   )
 (setq ispell-dictionary "british")
+(setq css-indent-offset 2)
+(setq native-comp-async-report-warnings-errors 'silent)
+(setq create-lockfiles nil)
+(set-time-zone-rule "Europe/London")
 
 ;;
 ;; Bindings
@@ -386,7 +381,6 @@ From a program takes two point or marker arguments, BEG and END."
                   (join-line -1)))
 (global-set-key [remap goto-line] 'goto-line-with-feedback)
 (global-set-key [f1] 'ansi-term)
-(global-set-key [f2] 'helm-git-grep-at-point)
 (global-set-key [f5] 'refresh-file)
 (global-set-key [f7] 'call-last-kbd-macro)
 (global-set-key (kbd "<f12>") 'ispell-word)
@@ -400,6 +394,9 @@ From a program takes two point or marker arguments, BEG and END."
                 #'endless/fill-or-unfill)
 (global-set-key (kbd "C-.") 'find-file-at-point-with-line)
 (global-set-key (kbd "<Scroll_Lock>") 'ignore)
+(global-set-key (kbd "C-c C-d") 'redraw-display)
+(global-set-key (kbd "C-x m") 'execute-extended-command)
+
 ;;
 ;; Hooks
 
@@ -409,45 +406,6 @@ From a program takes two point or marker arguments, BEG and END."
 ;; Sounds
 (setq visible-bell t)
 (setq ring-bell-function 'ignore)
-
-;;
-;; Projectile
-
-(projectile-mode +1)
-(define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
-(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-(projectile-global-mode)
-(setq projectile-indexing-method 'alien)
-(setq projectile-enable-caching nil)
-(setq projectile-completion-system 'helm)
-(setq projectile-switch-project-action 'magit-status)
-(setq projectile-switch-project-action 'open-magit-status)
-(setq projectile-use-git-grep t)
-(helm-projectile-on)
-(add-to-list 'projectile-globally-ignored-files "*.fasl")
-
-;;
-;; Helm
-
-(helm-mode 1)
-(global-set-key (kbd "M-x") 'helm-M-x)
-(global-set-key (kbd "C-x m") 'helm-M-x)
-(global-set-key (kbd "C-x C-f") 'helm-find-files)
-(helm-autoresize-mode t)
-(global-set-key (kbd "M-.") 'helm-etags-select)
-(global-set-key (kbd "C-c h") 'helm-command-prefix)
-(global-unset-key (kbd "C-x c"))
-(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
-(define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
-(define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
-(when (executable-find "curl")
-  (setq helm-google-suggest-use-curl-p t))
-(setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
-      helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
-      helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
-      helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
-      helm-ff-file-name-history-use-recentf t)
-(setq helm-M-x-fuzzy-match t) ;; optional fuzzy matching for helm-M-x
 
 ;;
 ;; Org mode
@@ -461,35 +419,6 @@ From a program takes two point or marker arguments, BEG and END."
                       (local-unset-key (kbd "C-c SPC")))))
 (setq org-todo-keywords
       '((sequence "TODO(t)" "HOLD(h)" "WAIT(w)" "ECHO(e)" "|" "DONE(d)")))
-
-;;
-;; Slime
-
-(setq quicklisp-location "~/quicklisp/slime-helper.el")
-(when (file-exists-p quicklisp-location)
-  (load (expand-file-name quicklisp-location))
-  (setq inferior-lisp-program "sbcl"))
-
-;;
-;; Mac OSX
-
-(when (memq window-system '(mac ns))
-  (exec-path-from-shell-initialize)
-  (set-M-3-to-hash))
-
-;; Python
-(defun insert-py-debug ()
-  (interactive)
-  (back-to-indentation)
-  (insert "console.log();")
-  (indent-for-tab-command)
-  (backward-char 2))
-(global-set-key (kbd "C-'") 'insert-py-debug)
-
-;; Javascript
-(setq js-indent-level 2)
-(add-to-list 'auto-mode-alist '("components\\/.*\\.js\\'" . rjsx-mode))
-(add-to-list 'auto-mode-alist '("screens\\/.*\\.js\\'" . rjsx-mode))
 
 ;; Whitespace
 (add-hook 'before-save-hook
@@ -516,96 +445,52 @@ From a program takes two point or marker arguments, BEG and END."
 (add-hook 'magit-status-mode-hook 'disable-magit-highlight-in-buffer)
 
 ;;
-;; Css
-
-(setq css-indent-offset 2)
-
-;;
 ;; Local customisations
 
 (setq cust-location "~/.emacs.d/init_local.el")
 (when (file-exists-p cust-location)
   (load cust-location))
 
-;; Do this last so we have a visual clue initialisation is finished.
-(load-theme 'zenburn)
-
-;;(defun set-theme ()
-;;  (interactive))
-  ;; (load-theme 'solo-jazz))
-  ;; (set-face-background 'default "#111")
-  ;; (set-face-background 'cursor "#c96")
-  ;; (set-face-background 'isearch "#c60")
-  ;; (set-face-foreground 'isearch "#eee")
-  ;; (set-face-background 'lazy-highlight "#960")
-  ;; (set-face-foreground 'lazy-highlight "#ccc")
-  ;; (set-face-foreground 'font-lock-comment-face "#fc0")
-  ;; (set-mouse-color "white"))
-
-;;(set-theme)
-
-;;
-;; Wsl
-
-; wsl-copy
-(defun wsl-copy (start end)
-  (interactive "r")
-  (shell-command-on-region start end "clip.exe")
-  (deactivate-mark))
-
-; wsl-paste
-(defun wsl-paste ()
+(defun my-full-screen-buffer-list ()
+  "Open buffer list in full screen in the current window."
   (interactive)
-  (let ((clipboard
-     (shell-command-to-string "powershell.exe -command 'Get-Clipboard' 2> /dev/null")))
-    (setq clipboard (replace-regexp-in-string "\r" "" clipboard)) ; Remove Windows ^M characters
-    (setq clipboard (substring clipboard 0 -1)) ; Remove newline added by Powershell
-    (insert clipboard)))
+  (delete-other-windows)
+  (buffer-menu))
 
+(global-set-key (kbd "C-x C-b") 'my-full-screen-buffer-list)
 
-; Bind wsl-copy to C-c C-c
-(global-set-key
- (kbd "C-c M-w")
- 'wsl-copy)
+(defun my-magit-switch-project ()
+  "Quickly switch between git projects in c:/dev/ with substring matching."
+  (interactive)
+  (let* ((project-root "c:/dev/")
+         (projects (delete "." (delete ".." (directory-files project-root))))
+         (completion-styles '(substring flex))
+         (completion-ignore-case t)
+         (selected (completing-read
+                    "Select project: "
+                    projects nil t nil
+                    'my-magit-switch-project-history)))
+    (when selected
+      (magit-status (concat project-root selected)))))
 
-; Bind wsl-paste to C-c C-v
-(global-set-key
- (kbd "C-c C-y")
- 'wsl-paste)
+(setq savehist-additional-variables
+      '(minibuffer-history
+        my-magit-switch-project-history))
 
-(global-set-key
- (kbd "C-c C-d")
- 'redraw-display)
+(global-set-key (kbd "C-c p") 'my-magit-switch-project)
+(global-set-key (kbd "C-c C-p") 'my-magit-switch-project)
 
-(setq create-lockfiles nil)
+(savehist-mode 1)
 
-(with-eval-after-load "org"
-  (define-key org-mode-map (kbd "C-c M-w") #'wsl-copy))
+(defun up-directory (arg)
+  "Move up a directory (delete backwards to /)."
+  (interactive "p")
+  (if (string-match-p "/." (minibuffer-contents))
+      (zap-up-to-char (- arg) ?/)
+    (delete-minibuffer-contents)))
 
-(with-eval-after-load "org"
-  (define-key org-mode-map (kbd "C-c C-y") #'wsl-paste))
-
-(with-eval-after-load "org"
-  (define-key org-mode-map (kbd "C-c C-d") #'redraw-display))
-
-(defun my-kill-ring-save (beg end &optional region)
-  (interactive (list (mark) (point) 'region))
-  (copy-region-as-kill beg end region)
-  ;; This use of called-interactively-p is correct because the code it
-  ;; controls just gives the user visual feedback.
-  (if (called-interactively-p 'interactive)
-      (progn
-        (indicate-copied-region)
-        (wsl-copy beg end))))
-
-(global-set-key
- (kbd "M-w")
- 'my-kill-ring-save)
-
-(add-hook 'org-mode-hook 'writeroom-mode)
-(set-time-zone-rule "Europe/London")
-
-(setq native-comp-async-report-warnings-errors 'silent)
+(define-key minibuffer-local-filename-completion-map
+            [C-backspace] #'up-directory)
 
 ;;
 ;; Restart emacs server.
@@ -614,13 +499,8 @@ From a program takes two point or marker arguments, BEG and END."
 (or (server-running-p)
     (server-start))
 
-(read-string "Loaded .emacs press enter to continue...")
+(load-theme 'wombat t)
+
+(setq inferior-lisp-program "sbcl")
 
 (provide '.emacs)
-;;; .emacs ends here
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
